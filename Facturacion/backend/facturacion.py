@@ -1,13 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from api.producto_api import producto_api
 import database
 
 
 database.create_all()
 
 app = FastAPI()
-##app.include_router()
+app.include_router(producto_api)
 
 
 app.add_middleware(
