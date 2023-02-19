@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.producto_api import producto_api
+from api.persona_api import persona_api
 import database
 
 
@@ -9,6 +10,8 @@ database.create_all()
 
 app = FastAPI()
 app.include_router(producto_api)
+app.include_router(persona_api)
+
 
 
 app.add_middleware(
