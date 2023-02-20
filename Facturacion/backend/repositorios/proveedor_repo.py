@@ -1,8 +1,8 @@
 from sqlalchemy import select
 import sqlalchemy
 from sqlalchemy.orm import Session
-from modelos.vendedor_api import ProveedorApi
-from modelos.vendedor_bd import ProveedorBd
+from modelos.proveedor_api import ProveedorApi
+from modelos.proveedor_bd import ProveedorBd
 from sqlalchemy.exc import IntegrityError
 
 class ProveedorRepositorio():
