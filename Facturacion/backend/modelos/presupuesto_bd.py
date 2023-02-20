@@ -11,9 +11,11 @@ class PresupuestoBd(BaseBd):
     valido_hasta= Column(Date, nullable=False)
     tipo_comprobante= Column(String, nullable=False)
     cuit_vendedor= Column(Integer, ForeignKey("vendedores.cuit"))
-    vendedor=relationship("VendedorBd")
+
     cuit_cliente= Column(BIGINT, ForeignKey("clientes.cuit"), nullable=False)
-    cliente= relationship("ClienteBd")
+    
     total_general=Column(Float, nullable=False)
 
+    vendedor=relationship("VendedorBd")
+    cliente= relationship("ClienteBd")
 

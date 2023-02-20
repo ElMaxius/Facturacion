@@ -10,10 +10,19 @@ class PresupuestoSinNumero(BaseModel):
     fecha_de_ingreso: date
     valido_hasta: date
     tipo_comprobante: str
-    vendedor: VendedorApi
-    cuit_vendedor:int
+    cuit_vendedor:int = None
+    cuit_cliente: int = None
+    total_general: float
+
+    class Config:
+        orm_mode = True
+
+class PresupuestoLista(BaseModel):
+    fecha_de_ingreso: date
+    valido_hasta: date
+    tipo_comprobante: str
+    vendedor:VendedorApi
     cliente: ClienteApi
-    cuit_cliente: int
     total_general: float
 
     class Config:

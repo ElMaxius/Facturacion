@@ -7,7 +7,6 @@ class VendedorApi(BaseModel):
     direccion: str
     telefono: str
     localidad: str
-    tipo: str
 
     class Config:
         orm_mode = True
