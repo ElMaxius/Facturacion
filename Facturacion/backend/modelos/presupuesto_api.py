@@ -18,6 +18,7 @@ class PresupuestoSinNumero(BaseModel):
         orm_mode = True
 
 class PresupuestoLista(BaseModel):
+    numero: int
     fecha_de_ingreso: date
     valido_hasta: date
     tipo_comprobante: str
