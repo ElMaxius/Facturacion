@@ -36,9 +36,9 @@ def agregar(datos:PersonaApi, db = Depends(get_db,)):
     try:
         result = repo.agregar(db, datos)
         if result is None:
-            raise HTTPException(status_code=404, detail='Los tipos deben ser P y C')
+            raise HTTPException(status_code=404)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=404, detail='no se pudo agregar la persona')
     return result
 
 @persona_api.delete('/{cuit}', status_code=204)
@@ -46,4 +46,11 @@ def borrar(cuit:int, db = Depends(get_db)):
     result = repo.borrar(db, cuit)
     if result is None:
         raise HTTPException(status_code=404, detail='Persona no encontrado')
+    return result
+
+@persona_api.put('/{cuit}', response_model=PersonaApi)
+def modificar(cuit:int, datos:PersonaApi, db = Depends(get_db)):
+    result = repo.modificar(db, cuit, datos)
+    if result is None:
+        raise HTTPException(status_code=404, detail='Persona no encontrada')
     return result

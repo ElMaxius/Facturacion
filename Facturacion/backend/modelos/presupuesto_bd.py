@@ -1,13 +1,13 @@
 from modelos.persona_bd import PersonaBd
 from database import BaseBd
-from sqlalchemy import BIGINT, Column, Date, Float, ForeignKey, Integer, String
+from sqlalchemy import BIGINT, Column, Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 class PresupuestoBd(BaseBd):
     __tablename__ = "presupuestos"
 
     numero = Column(Integer, primary_key=True)
-    fecha_de_ingreso= Column(Date, nullable=False)
+    fecha_de_ingreso= Column(DateTime, nullable=False)
     valido_hasta= Column(Date, nullable=False)
     tipo_comprobante= Column(String, nullable=False)
     cuit_vendedor= Column(Integer, ForeignKey("personas.cuit"))

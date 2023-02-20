@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from modelos.producto_api import ProductoSinCodigo, ProductoApi
+from modelos.producto_api import ProductoSinCodigo
 from modelos.producto_bd import ProductoBd
 from sqlalchemy.exc import IntegrityError
 
