@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class PersonaApi(BaseModel):
+class VendedorApi(BaseModel):
     cuit: int
     nombre: str
     direccion: str

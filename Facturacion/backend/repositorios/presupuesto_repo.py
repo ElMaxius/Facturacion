@@ -24,5 +24,5 @@ class PresupuestoRepositorio():
             db.add(nuevo_Presupuesto_db)
             db.commit()
         except  IntegrityError as e:
-            raise RuntimeError("No se ha podido agregar el Presupuesto".format(e))
+            raise RuntimeError(f"No se ha podido agregar el Presupuesto:{e}")
         return nuevo_Presupuesto_db
