@@ -21,7 +21,7 @@ class PersonaRepositorio():
     def agregar(self, db: Session, datos: PersonaApi):
         nueva_Persona_db: PersonaBd = PersonaBd(**datos.dict())
         try:
-            if(nueva_Persona_db.tipo == "p" or nueva_Persona_db.tipo == "c"):
+            if(nueva_Persona_db.tipo == "p" or nueva_Persona_db.tipo == "c" or nueva_Persona_db.tipo == "v"):
                 db.add(nueva_Persona_db)
                 db.commit()
             else:
