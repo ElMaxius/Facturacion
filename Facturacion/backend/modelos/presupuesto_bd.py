@@ -10,6 +10,7 @@ class PresupuestoBd(BaseBd):
     fecha_de_ingreso= Column(DateTime, nullable=False)
     valido_hasta= Column(Date, nullable=False)
     tipo_comprobante= Column(String, nullable=False)
+    
     cuit_vendedor= Column(Integer, ForeignKey("vendedores.cuit"))
 
     cuit_cliente= Column(BIGINT, ForeignKey("clientes.cuit"), nullable=False)

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from modelos.presupuesto_api import PresupuestoSinNumero, PresupuestoLista, PresupuestoApi
+from modelos.presupuesto_api import PresupuestoLista, PresupuestoApi
 from repositorios.presupuesto_repo import PresupuestoRepositorio
 from datetime import date
 from database import get_db
@@ -25,5 +25,5 @@ def agregar(datos:PresupuestoApi, db = Depends(get_db)):
 def get_presupuestoPorFecha(desde= date, hasta=date, db=Depends(get_db)):
     result = repo.get_presupuestoPorFecha(db, desde, hasta)
     if result is None:
-        raise HTTPException(status_code=404, detail='Producto no encontrado')
+        raise HTTPException(status_code=404, detail='Presupuesto no encontrado')
     return result
