@@ -7,6 +7,7 @@ from api.presupuesto_api import presupuesto_api
 from api.vendedor_api import vendedor_api
 from api.proveedor_api import proveedor_api
 from api.facturaCompras_api import facturaCompras_api
+from api.facturaVentas_api import facturaVentas_api
 import database
 
 
@@ -19,6 +20,7 @@ app.include_router(vendedor_api)
 app.include_router(proveedor_api)
 app.include_router(presupuesto_api)
 app.include_router(facturaCompras_api)
+app.include_router(facturaVentas_api)
 
 
 

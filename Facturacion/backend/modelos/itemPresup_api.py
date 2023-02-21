@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class itemComprobantePresupuesto(BaseModel):
+class ItemPresupuestoSinId(BaseModel):
     numero_presupuesto: int
     codigo_producto: int
     descripcion_producto: str
@@ -12,5 +12,5 @@ class itemComprobantePresupuesto(BaseModel):
         orm_mode = True
 
 
-class DetallePresupuestosApi(itemComprobantePresupuesto):
+class DetallePresupuestosApi(ItemPresupuestoSinId):
     id: int

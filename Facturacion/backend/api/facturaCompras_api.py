@@ -15,6 +15,14 @@ def get_all(db = Depends(get_db)):
     result = repo.get_all(db)
     return result
 
+@facturaCompras_api.get('/{numero}', response_model=FacturaComprasApi)
+def get_by_id(numero: int, db = Depends(get_db)):
+    result = repo.get_by_id(db, numero)
+    if result is None:
+        raise HTTPException(status_code=404, detail='Factura no encontrada')
+    
+    return result
+
 @facturaCompras_api.post('', response_model=FacturaComprasApi, status_code=201)
 def agregar(datos:FacturaComprasApi, db = Depends(get_db)):
     try:

@@ -1,23 +1,23 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from modelos.itemComprobanteCompras_bd import itemComprobanteCompras_bd
-from modelos.itemComprobanteCompras_api import DetalleComprasModel
+from modelos.itemFacturaCompras_bd import ItemFacturaCompras_Bd
+from modelos.itemFacturaCompras_api import DetalleComprasSinId
 
 
 class itemComprobanteCompras():
 
     def get_all(self, session: Session):
-        return session.execute(select(itemComprobanteCompras_bd)).scalars().all()
+        return session.execute(select(ItemFacturaCompras_Bd)).scalars().all()
 
     def get_by_id(self, id: int, session: Session):
-        detalle = session.get(itemComprobanteCompras_bd, id)
+        detalle = session.get(ItemFacturaCompras_Bd, id)
         if detalle:
             return detalle
         else:
             ValueError("No se encontró el detalle")
 
-    def save(self, datos: DetalleComprasModel, session: Session):
-        detalle = itemComprobanteCompras_bd(**datos.dict())
-        session.add(detalle)
-        session.commit()
+    def agregar(self, datos: DetalleComprasSinId, db: Session):
+        detalle = ItemFacturaCompras_Bd(**datos.dict())
+        db.add(detalle)
+        db.commit()
         return detalle

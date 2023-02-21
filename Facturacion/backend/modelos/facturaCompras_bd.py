@@ -15,5 +15,5 @@ class FacturaComprasBd(BaseBd):
     total_general=Column(Float, nullable=False)
 
     proveedor=relationship("ProveedorBd")
-    detalle= relationship("ItemFacturaCompras_Bd")
+    ##detalle= relationship("ItemFacturaCompras_Bd")
 

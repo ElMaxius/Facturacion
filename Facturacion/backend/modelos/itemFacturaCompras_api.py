@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class DetalleComprasModel(BaseModel):
+class DetalleComprasSinId(BaseModel):
     numero_factura_compra: int
     codigo_producto: int
     descripcion_producto: str
@@ -14,5 +14,5 @@ class DetalleComprasModel(BaseModel):
         orm_mode = True
 
 
-class DetalleComprasApi(DetalleComprasModel):
+class DetalleComprasApi(DetalleComprasSinId):
     id: int
