@@ -1,6 +1,7 @@
 from sqlalchemy import select
 import sqlalchemy
 from sqlalchemy.orm import Session
+from modelos.vendedor_api import VendedorSinId
 from modelos.vendedor_api import VendedorApi
 from modelos.vendedor_bd import VendedorBd
 from sqlalchemy.exc import IntegrityError
@@ -29,7 +30,7 @@ class VendedorRepositorio():
         db.commit()
         return objeto
     
-    def modificar(self, db:Session, cuit:int, datos:VendedorApi):
+    def modificar(self, db:Session, cuit:int, datos:VendedorSinId):
         objeto:VendedorBd = self.get_by_id(db, cuit)
         if objeto is None:
             return None

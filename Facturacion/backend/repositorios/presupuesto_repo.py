@@ -2,7 +2,6 @@ from datetime import date
 from sqlalchemy import select, and_
 from sqlalchemy.orm import Session
 from modelos.presupuesto_api import PresupuestoApi
-from modelos.presupuesto_api import PresupuestoSinNumero
 from modelos.presupuesto_bd import PresupuestoBd
 from sqlalchemy.exc import IntegrityError
 

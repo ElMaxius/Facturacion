@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class VendedorApi(BaseModel):
+class VendedorSinId(BaseModel):
     cuit: int
     nombre: str
     direccion: str
@@ -12,3 +12,5 @@ class VendedorApi(BaseModel):
         orm_mode = True
 
 
+class VendedorApi(BaseModel):
+    cuit: int
