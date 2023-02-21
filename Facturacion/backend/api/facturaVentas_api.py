@@ -19,7 +19,6 @@ def get_by_id(numero: int, db = Depends(get_db)):
     result = repo.get_by_id(db, numero)
     if result is None:
         raise HTTPException(status_code=404, detail='Factura no encontrada')
-    
     return result
 
 @facturaVentas_api.post('', response_model=FacturaVentasApi, status_code=201)
