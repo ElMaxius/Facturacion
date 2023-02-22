@@ -1,28 +1,25 @@
-# from sqlalchemy import select, and_
-# from sqlalchemy.orm import Session
-# from modelos.itemComprobanteVentas_bd import itemComprobanteVentas_bd
-# from api.itemComprobanteVentas_api import  itemComprobanteVentas
-# from modelos.facturas_ventas import FacturaVentaBd, FacturaVentaModel
+from sqlalchemy import select, and_
+from sqlalchemy.orm import Session
+from modelos.itemFacturaVentas_bd import ItemFacturaVentas_bd
+from modelos.itemFacturaVentas_api import ItemFacturaVentasApi
+from modelos.facturaVentas_bd import FacturaVentasBd
 
 
-# class itemComprobanteVentas():
+class ItemFacturaVentasRepositorio():
 
-#     def get_all(self, session: Session):
-#         return session.execute(select(itemComprobanteVentas_bd)).scalars().all()
+    def get_all(self, db: Session):
+        return db.execute(select(ItemFacturaVentas_bd)).scalars().all()
 
-#     def get_Items(self, fechadesde, fechahasta, session: Session):
-       
-#         return session.execute(select(itemComprobanteVentas_bd).where(and_((FacturaVentaBd.numero==itemComprobanteVentas_bd.numero_factura_venta),(fechadesde < FacturaVentaBd.fecha), (FacturaVentaBd.fecha < fechahasta)))).scalars().all()
+    def get_ItemsPorFecha(self, fechadesde, fechahasta, db: Session):
+        return db.execute(select(ItemFacturaVentas_bd).where(and_((FacturaVentasBd.numero==ItemFacturaVentas_bd.numero_facturaVenta),
+                                (fechadesde < FacturaVentasBd.fecha), (FacturaVentasBd.fecha < fechahasta)))).scalars().all()
 
-#     def get_by_id(self, id: int, session: Session):
-#         detalle = session.get(itemComprobanteVentas_bd, id)
-#         if detalle:
-#             return detalle
-#         else:
-#             ValueError("No se encontró el detalle")
+    def get_by_id(self, db: Session, numeroFacturaVenta:int):
+        result = db.execute(select(ItemFacturaVentas_bd).where(ItemFacturaVentas_bd.numero_facturaVenta == numeroFacturaVenta)).scalar()
+        return result
 
-#     def save(self, datos: itemComprobanteVentas, session: Session):
-#         detalle = itemComprobanteVentas_bd(**datos.dict())
-#         session.add(detalle)
-#         session.commit()
-#         return detalle
+    def agregar(self, datos: ItemFacturaVentasApi, db: Session):
+        detalle = ItemFacturaVentas_bd(**datos.dict())
+        db.add(detalle)
+        db.commit()
+        return detalle

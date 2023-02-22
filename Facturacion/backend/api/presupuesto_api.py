@@ -13,6 +13,13 @@ def get_all(db = Depends(get_db)):
     result = repo.get_all(db)
     return result
 
+@presupuesto_api.get('/{desde}/{hasta}', response_model=list[PresupuestoLista])
+def get_presupuestoPorFecha(desde= date, hasta=date, db=Depends(get_db)):
+    result = repo.get_presupuestoPorFecha(db, desde, hasta)
+    if result is None:
+        raise HTTPException(status_code=404, detail='Presupuesto no encontrado')
+    return result
+
 @presupuesto_api.post('', response_model=PresupuestoApi, status_code=201)
 def agregar(datos:PresupuestoApi, db = Depends(get_db)):
     try:
@@ -21,9 +28,3 @@ def agregar(datos:PresupuestoApi, db = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     return result
 
-@presupuesto_api.get('/{desde}/{hasta}', response_model=list[PresupuestoLista])
-def get_presupuestoPorFecha(desde= date, hasta=date, db=Depends(get_db)):
-    result = repo.get_presupuestoPorFecha(db, desde, hasta)
-    if result is None:
-        raise HTTPException(status_code=404, detail='Presupuesto no encontrado')
-    return result

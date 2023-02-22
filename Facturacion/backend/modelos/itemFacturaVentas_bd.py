@@ -6,15 +6,11 @@ from sqlalchemy import Column, Integer, Date, ForeignKey, String
 class ItemFacturaVentas_bd(BaseBd):
     __tablename__ = "itemFacturaVentas"
 
-    numero = Column(Integer, primary_key=True)
-    letra = Column(String(1), nullable=False)
-    nro_presupuesto = Column(ForeignKey('presupuestos.numero'))
-    presupuesto = relationship('PresupuestoBd')
+    id = Column(Integer, primary_key=True)
+    numero_facturaVenta = Column(Integer, ForeignKey("facturaVentas.numero"))
+    facturaVentas = relationship('FacturaVentasBd')
+    codigo_producto = Column(Integer, ForeignKey('productos.codigo'), nullable=False)
+    producto = relationship("ProductoBd")
+    cantidad = Column(Integer, nullable=False)
 
-    cuit_vendedor = Column(ForeignKey('vendedores.cuit'), nullable=False)
-    vendedor = relationship('VendedorBd')
-
-    cuit_cliente = Column(ForeignKey('clientes.cuit'), nullable=False)
-    cliente = relationship('ClienteBd')
-
-    fecha = Column(Date)
+    subtotal = Column(Integer)

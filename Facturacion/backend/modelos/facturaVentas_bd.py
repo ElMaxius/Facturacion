@@ -7,7 +7,7 @@ from modelos.itemFacturaVentas_bd import ItemFacturaVentas_bd
 
 class FacturaVentasBd(BaseBd):
     __tablename__ = "facturaVentas"
-
+    
     numero = Column(BIGINT, primary_key=True) 
     fecha= Column(DateTime, nullable=False)
     tipo_comprobante= Column(String, nullable=False)
