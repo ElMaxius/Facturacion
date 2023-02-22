@@ -15,21 +15,31 @@ export const Home = () => {
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Inicio</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/facCompraForm">Factura compra</a>
+              {/* <li class="nav-item">
+                <a class="nav-link" href="/facCompraForm">Facturas de compras</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/facVentaForm">Factura venta</a>
+                <a class="nav-link" href="/facVentaForm">Facturas de ventas</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/listaComprobantes">Lista comprobantes</a>
+                <a class="nav-link" href="/presupForm">Presupuestos</a>
+              </li> */}
+              <li class="nav-item">
+                <a class="nav-link" href="/listaProductos">Comprobantes</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/listaProductos">Lista productos</a>
+                <a class="nav-link" href="/listaProductos">Productos</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/presupForm">Presupuesto</a>
+                <a class="nav-link" href="/listaProductos">Proveedores</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/listaProductos">Clientes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/listaProductos">Vendedores</a>
+              </li>
+
             </ul>
           </div>
         </div>
