@@ -1,18 +1,28 @@
 from pydantic import BaseModel
+from modelos.producto_api import ProductoApi
 
-
-class DetalleComprasSinId(BaseModel):
+class ItemFacturaCompras(BaseModel):
     numero_factura_compra: int
     codigo_producto: int
-    descripcion_producto: str
     cantidad: int
-    p_u: float
-    iva: float
-    subtotal: float
+    subtotal: int
 
     class Config:
         orm_mode = True
 
 
-class DetalleComprasApi(DetalleComprasSinId):
+class ItemFacturaComprasLista(BaseModel):
     id: int
+    numero_factura_compra: int
+    codigo_producto: int
+    producto: ProductoApi
+    cantidad: int
+    subtotal: int
+
+    class Config:
+        orm_mode = True
+
+
+class ItemFacturaComprasApi(ItemFacturaCompras):
+    id: int
+

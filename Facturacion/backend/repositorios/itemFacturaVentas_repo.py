@@ -19,7 +19,7 @@ class ItemFacturaVentasRepositorio():
         return result
 
     def agregar(self, datos: ItemFacturaVentasApi, db: Session):
-        detalle = ItemFacturaVentas_bd(**datos.dict())
-        db.add(detalle)
+        item = ItemFacturaVentas_bd(**datos.dict())
+        db.add(item)
         db.commit()
-        return detalle
+        return item

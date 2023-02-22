@@ -17,7 +17,7 @@ def get_by_id(codigo: int, db = Depends(get_db)):
     result = repo.get_by_id(db, codigo)
     if result is None:
         raise HTTPException(status_code=404, detail='Producto no encontrado')
-    
+   
     return result
 
 @producto_api.post('', response_model=ProductoApi, status_code=201)
