@@ -1,7 +1,7 @@
-export function PresupuestoFormulario() {
+export default function PresupuestoFormulario() {
     return (
         <div>
-            <text>Presupuesto formulario</text>
+            <h3>Presupuesto formulario</h3>
         </div>
     )
 

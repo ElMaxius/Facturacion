@@ -1,7 +1,7 @@
-export function ListaProductos() {
+export default function ListaProductos() {
     return (
         <div>
-            <text>Lista productos</text>
+            <h3>Lista productos</h3>
         </div>
     )
 

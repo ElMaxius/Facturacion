@@ -1,9 +1,7 @@
-import { Home } from "./home";
-
-export function FacVentaFormulario (){
+export default function FacVentaFormulario (){
     return (
         <>
-        <text>Factura venta</text>
+        <h1>Factura venta</h1>
         </>
 
     )
