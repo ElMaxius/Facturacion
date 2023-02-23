@@ -18,7 +18,7 @@ const FacturaCompraList = () => {
 
   return (
     <div className="mt-3">
-      <h1 className="mb-3">Lista de facturas de compra</h1>
+
 
       <div className='container-fluid'>
         <Link to="" >
@@ -31,7 +31,7 @@ const FacturaCompraList = () => {
                 <th>Fecha</th>
                 <th>Tipo</th>
                 <th>CUIT Proveedor</th>
-                <th>Total</th>
+                <th>Total Factura</th>
             </tr>
             </thead>
             <tbody>
