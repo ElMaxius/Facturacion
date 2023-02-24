@@ -1,8 +1,8 @@
-export default function FacCompraFormulario() {
+export default function FacVentaFormulario (){
     return (
-        <div>
-             <h1>Factura Compra</h1>
-        </div>
-    )
+        <>
+        <h1>Factura Compra</h1>
+        </>
 
+    )
 }

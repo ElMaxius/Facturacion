@@ -9,8 +9,8 @@ export default function Comprobantes() {
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav">
                             <li className="nav-item"><NavLink to="listaFacturaCompra" className="nav-link">Facturas de compras</NavLink></li>
-                            <li className="nav-item"><NavLink to="facVentaForm" className="nav-link">Facturas de ventas</NavLink></li>
-                            <li className="nav-item"><NavLink to="presupForm" className="nav-link">Presupuestos</NavLink></li>
+                            <li className="nav-item"><NavLink to="listaFacturaVenta" className="nav-link">Facturas de ventas</NavLink></li>
+                            <li className="nav-item"><NavLink to="listaPresupuesto" className="nav-link">Presupuestos</NavLink></li>
                         </ul>
                     </div>
                 </div>

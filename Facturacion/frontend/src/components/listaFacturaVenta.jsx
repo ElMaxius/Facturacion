@@ -3,8 +3,8 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { Table, Button } from 'react-bootstrap';
 
-const FacturaCompraList = () => {
-  const [facturas, setFacturasCompra] = useState([]);
+const FacturaVentaList = () => {
+  const [facturas, setFacturasVenta] = useState([]);
   const navegar = useNavigate()
 
   useEffect(() => {
@@ -12,13 +12,13 @@ const FacturaCompraList = () => {
   }, []);
 
   const getDatos = async () => {
-    let resultado = await axios.get('http://localhost:8000/facturaCompras')
+    let resultado = await axios.get('http://localhost:8000/facturaVentas')
     console.log(resultado)
-    setFacturasCompra(resultado.data)
+    setFacturasVenta(resultado.data)
 }
 
 const agregarFactura = () => {
-    navegar("../facCompraForm")
+    navegar("../facVentaForm")
 }
 
   return (
@@ -35,7 +35,8 @@ const agregarFactura = () => {
                 <th>Número</th>
                 <th>Fecha</th>
                 <th>Tipo</th>
-                <th>CUIT Proveedor</th>
+                <th>CUIT Vendedor</th>
+                <th>CUIT Cliente</th>
                 <th>Total Factura</th>
                 <th></th>
             </tr>
@@ -46,10 +47,11 @@ const agregarFactura = () => {
                 <td>{factura.numero}</td>
                 <td>{factura.fecha}</td>
                 <td>{factura.tipo_comprobante}</td>
-                <td>{factura.proveedor.cuit}</td>
+                <td>{factura.vendedor.cuit}</td>
+                <td>{factura.cliente.cuit}</td>
                 <td>{factura.total_general}</td>
                 <td>        
-                    <Link to="/facturas-compra/nueva" >
+                    <Link to="" >
                     <Button variant="primary">Ver</Button>
                     </Link>
                 </td>
@@ -62,4 +64,4 @@ const agregarFactura = () => {
   );
 };
 
-export default FacturaCompraList;
+export default FacturaVentaList;
