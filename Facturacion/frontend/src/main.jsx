@@ -15,6 +15,7 @@ import FacturaCompraList from './components/listaFacturaCompra'
 import FacturaVentaList from './components/listaFacturaVenta'
 import PresupuestoList from './components/listaPresupuesto'
 import ProveedorFormulario from './components/proveedorForm'
+import ProductoFormulario from './components/productoForm';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -30,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="presupForm" element={<PresupuestoFormulario/>} />
           </Route>
           <Route path="/ListaProductos" element={<ListaProductos/>} />
+          <Route path="productoForm/:id" element={<ProductoFormulario/>} />
           <Route path="/ListaProveedores" element={<ListaProveedores/>} />
           <Route path="proveedorForm/:id" element={<ProveedorFormulario/>} />
           <Route path="/ListaClientes" element={<ListaClientes/>} />
