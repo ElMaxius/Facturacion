@@ -1,7 +1,7 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function FacCompraFormulario() {
   const [facCompra, setFacCompra] = useState({
@@ -12,8 +12,8 @@ export default function FacCompraFormulario() {
     total: null,
   });
 
-  const [proveedores, setProveedores] = ueState([]);
-  const [items, setItems] = ueState([]);
+  const [proveedores, setProveedores] = useState([]);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     /* LLAMAR AL BACK PARA Q DEVUELVA LOS PROVEEDORES */
@@ -97,7 +97,7 @@ export default function FacCompraFormulario() {
       <div className="container-fluid" style={{ width: "50vw" }}>
         <form>
           {/* TIPO */}
-          <div class="mb-3">
+          <div className="mb-3">
             <label className="form-label">Tipo de factura</label>
             <select
               className="form-select"
@@ -111,8 +111,8 @@ export default function FacCompraFormulario() {
           </div>
 
           {/* NUMERO */}
-          <div class="mb-3">
-            <label for="nroFacturaInput" className="form-label">
+          <div className="mb-3">
+            <label htmlFor="nroFacturaInput" className="form-label">
               Nro de factura
             </label>
             <input
@@ -124,8 +124,7 @@ export default function FacCompraFormulario() {
           </div>
 
           {/* FECHA */}
-          <div class="mb-3">
-            <div className="container">
+          <div className="mb-3">
               <div className="form-group">
                 <label htmlFor="fecha">Fecha:</label>
                 <br />
@@ -136,12 +135,11 @@ export default function FacCompraFormulario() {
                   onChange={handleDateChange}
                 />
               </div>
-            </div>
           </div>
 
           {/* CUIT */}
-          <div class="mb-3">
-            <label for="nroFacturaInput" className="form-label">
+          <div className="mb-3">
+            <label htmlFor="nroFacturaInput" className="form-label">
               CUIT
             </label>
             <input

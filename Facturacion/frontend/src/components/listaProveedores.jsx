@@ -18,7 +18,7 @@ export default function ListaProveedores() {
     }
 
     const agregarproveedor = () => {
-        navegar("../proveedorForm")
+        navegar("../proveedorForm/"+-1)
     }
 
     const borrar = async (cuit) =>{
@@ -58,7 +58,7 @@ export default function ListaProveedores() {
                                 <td>{proveedor.telefono}</td>
                                 <td>{proveedor.localidad}</td>
                                 <td>
-                                    <Link><Button variant="primary" onClick={agregarproveedor}>Editar</Button></Link>{' '}
+                                    <Link to={"../proveedorForm/"+proveedor.cuit}><Button variant="primary">Editar</Button></Link>{' '}
                                     <Button variant="danger" onClick={()=>borrar(proveedor.cuit)}>Eliminar</Button>
                                 </td>
                             </tr>
