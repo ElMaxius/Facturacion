@@ -9,6 +9,8 @@ import Comprobantes from './components/comprobantes'
 import ListaProductos from './components/listaProductos'
 import ListaProveedores from './components/listaProveedores'
 import ListaClientes from './components/listaClientes';
+import ClienteFormulario from './components/clienteForm'
+import VendedorFormulario from './components/vendedorForm'
 import ListaVendedores from './components/listaVendedores';
 import PresupuestoFormulario from './components/presupForm'
 import FacturaCompraList from './components/listaFacturaCompra'
@@ -16,6 +18,8 @@ import FacturaVentaList from './components/listaFacturaVenta'
 import PresupuestoList from './components/listaPresupuesto'
 import ProveedorFormulario from './components/proveedorForm'
 import ProductoFormulario from './components/productoForm';
+
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -35,7 +39,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/ListaProveedores" element={<ListaProveedores/>} />
           <Route path="proveedorForm/:id" element={<ProveedorFormulario/>} />
           <Route path="/ListaClientes" element={<ListaClientes/>} />
+          <Route path="/clienteForm/:id" element={<ClienteFormulario/>} />
           <Route path="/ListaVendedores" element={<ListaVendedores/>} />
+          <Route path="/vendedorForm/:id" element={<VendedorFormulario/>} />
         </Route>
       </Routes>
     </BrowserRouter>
