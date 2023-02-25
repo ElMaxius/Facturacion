@@ -37,7 +37,7 @@ export default function ProductoFormulario() {
     }
 
     const grabarProducto = async () => {
-        try {           
+        try {
             if (params.id !== "-1") {
                 console.log({ nombre, alicuotaIVA, precio, codigo })
                 await axios.put(`http://localhost:8000/productos/${params.id}`, { nombre, alicuotaIVA, precio, codigo }).then(navigate('../listaProductos'));
@@ -70,7 +70,15 @@ export default function ProductoFormulario() {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="iva" className="form-label">IVA</label>
-                    <input type="number" className="form-control" id="iva" value={alicuotaIVA} onChange={(e) => setIva(e.target.value)} />
+                    <select
+                        className="form-select"
+                        aria-label="Tipo de factura"
+                        onChange={(e) => setIva(e.target.value)}
+                        //</div>defaultValue={Number(alicuotaIVA).toString()} 
+                        >
+                        <option value="0.21">21%</option>
+                        <option value="0.105">10.5%</option>
+                    </select>
                 </div>
                 <div className="mb-3 col-2">
                     <label htmlFor="precio" className="form-label">Precio</label>
