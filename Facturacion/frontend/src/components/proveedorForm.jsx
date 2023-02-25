@@ -46,14 +46,14 @@ export default function ProveedorFormulario() {
                     alert('Ingrese un cuit valido');
                 } else {
                     await axios.put(`http://localhost:8000/proveedor/${params.id}`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaProveedores'));
-                    //navigate('../listaProveedores');
+
                 }
             } else {
                 if (cuit <= 0) {
                     alert('Ingrese un cuit valido');
                 } else {
                     await axios.post(`http://localhost:8000/proveedor`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaProveedores'));
-                    //navigate('../listaProveedores');
+
                 }
             }
         } catch (e) {
