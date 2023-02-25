@@ -25,7 +25,7 @@ export default function ListaClientes() {
       <div className="mt-3">
   
   
-        <div className='container-fluid'>
+        <div className='container'>
   
           <Button variant="primary" onClick={agregarCliente}>Cargar cliente</Button>
   

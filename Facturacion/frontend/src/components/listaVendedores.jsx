@@ -25,7 +25,7 @@ export default function ListaVendedores() {
       <div className="mt-3">
   
   
-        <div className='container-fluid'>
+        <div className='container'>
   
           <Button variant="primary" onClick={agregarVendedor}>Cargar vendedor</Button>
   

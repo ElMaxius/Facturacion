@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from modelos.producto_api import ProductoSinCodigo
+from modelos.producto_api import ProductoSinCodigo, ProductoApi
 from modelos.producto_bd import ProductoBd
 from sqlalchemy.exc import IntegrityError
 
@@ -29,6 +29,15 @@ class ProductoRepositorio():
         db.commit()
         return objeto
     
+    def modificar(self, db:Session, codigo:int, datos:ProductoApi):
+        objeto:ProductoBd = self.get_by_id(db, codigo)
+        if objeto is None:
+            return None
+        else:
+            for k, v in datos.dict(exclude_unset=True).items():
+                setattr(objeto, k, v)
+        db.commit()
+        return objeto
 
     
 

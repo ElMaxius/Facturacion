@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
 export default function ProveedorFormulario() {
-    const [proveedor, setProveedor] = useState();
     const [cuit, setCuit] = useState('');
     const [nombre, setNombre] = useState('');
     const [direccion, setDireccion] = useState('');

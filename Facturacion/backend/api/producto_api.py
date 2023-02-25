@@ -35,4 +35,11 @@ def borrar(codigo:int, db = Depends(get_db)):
         raise HTTPException(status_code=404, detail='Producto no encontrado')
     return result
 
+@producto_api.put('/{codigo}', response_model=ProductoApi)
+def modificar(codigo:int, datos:ProductoApi, db = Depends(get_db)):
+    result = repo.modificar(db, codigo, datos)
+    if result is None:
+        raise HTTPException(status_code=404, detail='proveedor no encontrada')
+    return result
+
 
