@@ -18,7 +18,7 @@ const FacturaCompraList = () => {
 }
 
 const agregarFactura = () => {
-    navegar("../facCompraForm")
+    navegar("../facCompraForm/"+-1)
 }
 
   return (
