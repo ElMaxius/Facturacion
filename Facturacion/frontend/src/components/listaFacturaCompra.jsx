@@ -49,7 +49,7 @@ const agregarFactura = () => {
                 <td>{factura.proveedor.cuit}</td>
                 <td>{factura.total_general}</td>
                 <td>        
-                    <Link to="/facturas-compra/nueva" >
+                    <Link to={"../verFacturaCompraA/"+factura.numero} >
                     <Button variant="primary">Ver</Button>
                     </Link>
                 </td>

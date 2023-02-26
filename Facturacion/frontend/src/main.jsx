@@ -18,16 +18,17 @@ import FacturaVentaList from './components/listaFacturaVenta'
 import PresupuestoList from './components/listaPresupuesto'
 import ProveedorFormulario from './components/proveedorForm'
 import ProductoFormulario from './components/productoForm';
-
+import FacturaAForm from './components/verFacturaCompraA'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Home />} >
           <Route path="/comprobantes" element={<Comprobantes/>} >      
             <Route path="listaFacturaCompra" element={<FacturaCompraList/>}/>
+            <Route path="verFacturaCompraA/:id" element={<FacturaAForm/>} />
             <Route path="facCompraForm" element={<FacCompraFormulario />} />
             <Route path="listaFacturaVenta" element={<FacturaVentaList/>}/>
             <Route path="facVentaForm" element={<FacVentaFormulario />} />
@@ -45,5 +46,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </Route>
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>
+
 )

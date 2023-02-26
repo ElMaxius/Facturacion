@@ -1,122 +1,208 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import axios from 'axios';
+import { Table, Button } from 'react-bootstrap';
 
 function FacturaAForm() {
-    const [factura, setFacturaCompra] = useState({});
-    // const [numeroFactura, setNumeroFactura] = useState('');
-    // const [fechaFactura, setFechaFactura] = useState('');
-    // const [proveedorCuit, setproveedorCuit] = useState('');
-    const [proveedor, setProveedor] = useState()
-    // const [proveedorNombre, setproveedorNombre] = useState('');
-    // const [proveedorDireccion, setproveedorDireccion] = useState('');
-    // const [proveedorTelefono, setproveedorTelefono] = useState('');
-    // const [proveedorLocalidad, setproveedorLocalidad] = useState('');
+    const [factura, setFacturaCompra] = useState({
+        numero: 0,
+        fecha: "",
+        tipo_comprobante: "",
+        proveedor: {
+            cuit: 0,
+            nombre: "",
+            direccion: "",
+            telefono: "",
+            localidad: ""
+        },
+        total_general: 0.0
+    });
+    const [subtotal, setSubtotal] = useState(0)
+    const [iva21, setIva21] = useState(0)
+    const [iva105, setIva105] = useState(0)
+    const [ivaAcumulado, setIva] = useState(0)
     const [items, setItems] = useState([]);
-    // const [subtotal, setSubtotal] = useState(0);
-    // const [iva, setIVA] = useState(0);
-    // const [total, setTotal] = useState(0);
+    const params = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        obtenerDatosFactura()
-      }, []);
+        obtenerDatosFactura();
+        obtenerItems();
+        //calcular();
+    }, []);
+
+
+    const calcular = (i) => {
+        let subtotal = 0;
+        let iva21 = 0;
+        let iva105 = 0;
+        let ivaAcumulado = 0;
+        console.log("calcular", i)
+        try {
+            i.forEach((item) => {
+                subtotal += item.producto.precio * item.cantidad;
+                if (item.producto.alicuotaIVA == 0.105) {
+                    iva105 += item.producto.alicuotaIVA * (item.cantidad * item.producto.precio);
+                }
+                else if (item.producto.alicuotaIVA == 0.21) {
+                    iva21 += item.producto.alicuotaIVA * (item.cantidad * item.producto.precio);
+                }
+            });
+        } catch (e) {
+            console.error(e.message);
+        }
+        ivaAcumulado = iva21 + iva105;
+        setSubtotal(subtotal);
+        setIva(ivaAcumulado);
+        setIva21(iva21);
+        setIva105(iva105);
+    };
+
 
     const obtenerDatosFactura = async () => {
-        try{
-                let resultado = await axios.get(`http://localhost:8000/facturaCompras/${params.id}`)
-                console.log(resultado)
-                setFacturaCompra(resultado.data)
-
-        }catch (e){
-            console.error(e);
-            alert('Ha ocurrido un error al obtener los datos de la Factura');
-        }
-    }
-
-    const getProveedor = async (id) => {
         try {
-            let response = await axios.get(`http://localhost:8000/proveedor/${factura}`)
-            const prov = response.data;
-            setProveedor
+            let resultado = await axios.get(`http://localhost:8000/facturaCompras/${params.id}`).then(data => data.data)
+            setFacturaCompra(resultado)
+
         } catch (e) {
-            console.error(e);
-            alert('Ha ocurrido un error al obtener el proveedor');
+            console.error(e.message);
+            //alert('Ha ocurrido un error al obtener los datos de la Factura');
         }
     }
+    const obtenerItems = async () => {
+        try {
+            let resultado = await axios.get(`http://localhost:8000/itemFacturaCompras/${params.id}`).then(data => data.data)
+            setItems(resultado)
+            calcular(resultado)
+        } catch (e) {
+            console.error(e.message);
+            alert('Ha ocurrido un error al obtener los datos de la Factura' + e.message);
+        }
 
-    const calcularTotales = () => {
-        const nuevoSubtotal = items.reduce((total, item) => total + item.cantidad * item.precioUnitario, 0);
-        setSubtotal(nuevoSubtotal);
-        const nuevoIVA = nuevoSubtotal * 0.21; // Tasa de IVA del 21%
-        setIVA(nuevoIVA);
-        const nuevoTotal = nuevoSubtotal + nuevoIVA;
-        setTotal(nuevoTotal);
     }
+
 
     return (
-        <div>
-            <h2>Factura A</h2>
-            <form>
-                <label>
-                    Número de factura:
-                    <input type="text" value={numeroFactura} onChange={(e) => setNumeroFactura(e.target.value)} />
+        <div className="container">
+            <h2 className="mt-4 mb-4 text-center">
+                <label className="form-label">
+                    {"Factura " + factura.tipo_comprobante}
                 </label>
-                <label>
-                    Fecha de factura:
-                    <input type="date" value={fechaFactura} onChange={(e) => setFechaFactura(e.target.value)} />
+            </h2>
+            <div className="form-group row">
+                <label className="col-sm-4 col-form-label ms-auto">
+                    Factura Nro: {factura.numero}
                 </label>
-                <label>
-                    Nombre del cliente:
-                    <input type="text" value={proveedorNombre} onChange={(e) => setproveedorNombre(e.target.value)} />
+            </div>
+            <div className="form-group row">
+                <label className="col-sm-4 col-form-label ms-auto">
+                    Fecha de emision: {factura.fecha}
                 </label>
-                <label>
-                    Dirección del cliente:
-                    <input type="text" value={proveedorDireccion} onChange={(e) => setproveedorDireccion(e.target.value)} />
+            </div>
+            <div className="form-group row">
+                <label className="col-sm-10 col-form-label">
+                    Proveedor: {factura.proveedor.nombre}
                 </label>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nombre</th>
-                            <th>Cantidad</th>
-                            <th>IVA</th>
-                            <th>Precio Unitario</th>
-                            <th>Subtotal</th>
-                            <th>Eliminar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item, index) => (
+                <div className="col-sm-2">
+                    <p className="form-control-static"></p>
+                </div>
+            </div>
+            <div className="form-group row">
+                <label className="col-sm-10 col-form-label">
+                    CUIT: {factura.proveedor.cuit}
+                </label>
+                <div className="col-sm-2">
+                    <p className="form-control-static"></p>
+                </div>
+            </div>
+            <div className="form-group row">
+                <label className="col-sm-10 col-form-label">
+                    Dirección: {factura.proveedor.direccion}
+                </label>
+                <div className="col-sm-2">
+                    <p className="form-control-static"></p>
+                </div>
+            </div>
+            <div className="form-group row">
+                <label className="col-sm-10 col-form-label">
+                    Telefono: {factura.proveedor.telefono}
+                </label>
+                <div className="col-sm-2">
+                    <p className="form-control-static"></p>
+                </div>
+            </div>
+            <div className="form-group row">
+                <label className="col-sm-10 col-form-label">
+                    Localidad: {factura.proveedor.localidad}
+                </label>
+                <div className="col-sm-2">
+                    <p className="form-control-static"></p>
+                </div>
+            </div>
+            <Table className="mt-3" striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Codigo</th>
+                        <th>Descripcion</th>
+                        <th>PU</th>
+                        <th>IVA</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map((item, index) => {
+                        //setSubtotal(subtotal + (item.producto.precio * item.cantidad));
+                        //setIva(ivaAcumulado+(item.producto.alicuotaIVA*(item.cantidad * item.producto.precio)))
+                        return (
                             <tr key={index}>
-                                <td>{item.codigo}</td>
-                                <td>{item.nombre}</td>
                                 <td>{item.cantidad}</td>
-                                <td>{item.iva}</td>
-                                <td>{item.precioUnitario}</td>
-                                <td>{item.cantidad * item.precioUnitario}</td>
-                                <td><button onClick={() => handleEliminarItem(index)}>Eliminar</button></td>
+                                <td>{item.codigo_producto}</td>
+                                <td>{item.producto.nombre}</td>
+                                <td>{(item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                <td>{item.producto.alicuotaIVA}</td>
+                                <td>{(item.cantidad * item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <button onClick={handleAgregarItem}>Agregar Item</button>
-                <br />
-                <br />
-                <label>
+                        );
+                    })}
+                </tbody>
+            </Table>
+            <br />
+            <br />
+            <div className='row justify-content-end'>
+                <label className="mb-3 w-25">
                     Subtotal:
-                    <input type="text" value={subtotal} disabled />
+                    <input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                </label>
+            </div>
+            <div className='row justify-content-end'>
+                <br />
+                <label className="mb-3 col-3">
+                    IVA 10.5:
+                    <input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
                 </label>
                 <br />
-                <label>
-                    IVA (21%):
-                    <input type="text" value={iva} disabled />
+                <br />
+                <label className="mb-3 col-3">
+                    IVA 21:
+                    <input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
                 </label>
                 <br />
-                <label>
+                <br />
+                <label className="mb-3 col-3">
+                    Subtotal IVA:
+                    <input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                </label>
+                <br />
+                <label className="mb-3 col-3">
                     Total:
-                    <input type="text" value={total} disabled />
+                    <input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
                 </label>
                 <br />
-                <button type="submit" onClick={calcularTotales}>Calcular Totales</button>
-            </form>
+            </div>
+            <div className="mb-3 text-end">
+                <Button className="btn btn-primary ms-1" onClick={() => navigate(-1)}>Volver</Button>
+            </div>
         </div>
     );
 }
