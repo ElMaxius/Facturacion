@@ -38,6 +38,7 @@ const FacturaVentaList = () => {
     setFacturasVenta(resultado.data)
   }
 
+
   const agregarFactura = () => {
     navegar("../facVentaForm")
   }
@@ -72,45 +73,49 @@ const FacturaVentaList = () => {
           </Button>{" "}
         </div>
         {mostrarInputs && (
-
           <div className="form-inline border border-secondary">
-            <Button variant="success" className='mt-2' onClick={consultarVentas}>
-              Consultar ventas del periodo
-            </Button>{' '}
-            <Button variant="success" className='mt-2' onClick={consultarFacturas}>
-              Consultar facturas del periodo
-            </Button>{' '}
-            <Button variant="success" className='mt-2' onClick={getDatos}>
-              Limpiar Filtro
-            </Button>
-            <div className="col-6">
-              <label htmlFor="desde" className="mr-2">
-                fecha desde:
-              </label>
-              <div className="col-sm-4">
-                <DatePicker
-                  id="fechaDesde"
-                  selected={fechaDesde ? parseISO(fechaDesde) : null}
-                  dateFormat="yyyy-MM-dd"
-                  onChange={handleFechaDesdeChange}
-                  className="form-control"
-                />
+            <div className="row">
+              <div className="col-3 mb-3 mt-2">
+                <label htmlFor="desde" className="mr-2">
+                  fecha desde:
+                </label>
+                <div className="form-group">
+                  <DatePicker
+                    id="fechaDesde"
+                    selected={fechaDesde ? parseISO(fechaDesde) : null}
+                    dateFormat="yyyy-MM-dd"
+                    onChange={handleFechaDesdeChange}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-3 mb-3 mt-2">
+                <label htmlFor="hasta" className="mr-2">
+                  fecha hasta:
+                </label>
+                <div className="form-group">
+                  <DatePicker
+                    id="fechaHasta"
+                    selected={fechaHasta ? parseISO(fechaHasta) : null}
+                    dateFormat="yyyy-MM-dd"
+                    onChange={handleFechaHastaChange}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-6 mt-4">
+                <Button variant="success" className='mt-2 mb-2' onClick={consultarVentas}>
+                  Consultar ventas del periodo
+                </Button>{' '}
+                <Button variant="success" className='mt-2 mb-2' onClick={consultarFacturas}>
+                  Consultar facturas del periodo
+                </Button>{' '}
+                <Button variant="success" className='mt-2 mb-2' onClick={getDatos}>
+                  Limpiar Filtro
+                </Button>
               </div>
             </div>
-            <div className="col-6">
-              <label htmlFor="hasta" className="mr-2">
-                fecha hasta:
-              </label>
-              <div className="col-sm-4 mb-2">
-                <DatePicker
-                  id="fechaHasta"
-                  selected={fechaHasta ? parseISO(fechaHasta) : null}
-                  dateFormat="yyyy-MM-dd"
-                  onChange={handleFechaHastaChange}
-                  className="form-control"
-                />
-              </div>
-            </div>
+
           </div>
         )}
       </div>

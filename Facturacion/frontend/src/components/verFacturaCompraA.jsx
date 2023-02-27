@@ -152,8 +152,6 @@ function FacturaAForm() {
                 </thead>
                 <tbody>
                     {items.map((item, index) => {
-                        //setSubtotal(subtotal + (item.producto.precio * item.cantidad));
-                        //setIva(ivaAcumulado+(item.producto.alicuotaIVA*(item.cantidad * item.producto.precio)))
                         return (
                             <tr key={index}>
                                 <td>{item.cantidad}</td>

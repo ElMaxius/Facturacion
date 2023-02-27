@@ -31,7 +31,6 @@ function FacturaCompraForm() {
 	const [iva21, setIva21] = useState(0)
 	const [iva105, setIva105] = useState(0)
 	const [ivaAcumulado, setIva] = useState(0)
-	//const [totalGeneral, setTotalGeneral] = useState(0)
 	const params = useParams();
 	const navigate = useNavigate();
 
@@ -52,12 +51,24 @@ function FacturaCompraForm() {
 	useEffect(() => {
 		obtenerProductos();
 		console.log(factura)
-		//obtenerItems();
 	}, []);
+
+	useEffect(() => {
+		setFactura(f => ({ ...f, total_general: subtotal + ivaAcumulado }));
+	}, [subtotal, ivaAcumulado]);
 
 	useEffect(() => {
 		calcular(itemsTemp);
 	}, [itemsTemp]);
+
+	useEffect(() => {
+		setItemsTemp(()=>{
+			return itemsTemp.map((item) => {
+				item.subtotalTemp = (item.precio * item.cantidad) * (factura.tipo_comprobante == 'A' ? 1 : 1 + item.iva)
+				return item;
+			});
+		})
+	}, [factura.tipo_comprobante]);
 
 
 	const handleEdits = (ev) => {
@@ -87,7 +98,6 @@ function FacturaCompraForm() {
 		let iva21 = 0;
 		let iva105 = 0;
 		let ivaAcumulado = 0;
-		//let totalGeneral = 0;
 		console.log("calcular", i)
 		try {
 			i.forEach((item) => {
@@ -103,14 +113,13 @@ function FacturaCompraForm() {
 			console.error(e.message);
 		}
 		ivaAcumulado = iva21 + iva105;
-		//totalGeneral= subtotal + ivaAcumulado;
 		setSubtotal(subtotal);
 		setIva(ivaAcumulado);
 		setIva21(iva21);
 		setIva105(iva105);
-		//setTotalGeneral(totalGeneral);
 		console.log(factura)
-	};
+
+	}
 	const validarCuit = () => {
 		if (factura.cuit_proveedor != 0) {
 			obtenerProveedor();
@@ -141,8 +150,6 @@ function FacturaCompraForm() {
 			console.error(e.message);
 			alert('Ha ocurrido un error al obtener los Productos' + e.message);
 		}
-
-
 	}
 
 	const obtenerItems = async () => {
@@ -154,7 +161,6 @@ function FacturaCompraForm() {
 			console.error(e.message);
 			alert('Ha ocurrido un error al obtener los datos de la Factura' + e.message);
 		}
-
 	}
 	const agregarItemTemporal = () => {
 		try {
@@ -166,11 +172,9 @@ function FacturaCompraForm() {
 					precio: productoSeleccionado.precio,
 					iva: productoSeleccionado.alicuotaIVA,
 					cantidad: document.getElementById('cantidad').value,
-					subtotalTemp: ((productoSeleccionado.precio * document.getElementById('cantidad').value) * (1 + productoSeleccionado.alicuotaIVA)),
+					subtotalTemp: ((productoSeleccionado.precio * document.getElementById('cantidad').value) * (factura.tipo_comprobante == 'A' ? 1 : 1 + productoSeleccionado.alicuotaIVA)),
 				};
 				setItemsTemp([...itemsTemp, itemTemporal]);
-				//setFactura({ ...factura, total_general: totalGeneral });
-
 			} else {
 				alert('Debe ingresar un numero de factura')
 			}
@@ -202,9 +206,9 @@ function FacturaCompraForm() {
 					cantidad: item.cantidad,
 					subtotal: item.subtotalTemp
 				};
-
+				console.log(itemFinal)
+				agregarItem(itemFinal)
 			});
-
 		}
 		catch (e) {
 			alert('Ha ocurrido un error al adaptar los items: ' + e.message);
@@ -234,9 +238,20 @@ function FacturaCompraForm() {
 	};
 
 	const GenerarFactura = async () => {
-		agregarTotal();
-		console.log(factura)
-		agregarFactura();
+		if ((factura.tipo_comprobante != "") && (factura.numero != 0) && (factura.fecha != "")) {
+			if (itemsTemp.length > 0) {
+				agregarTotal();
+				console.log(factura)
+				agregarFactura();
+				adaptarItems(itemsTemp)
+				navigate(-1)
+			} else {
+				alert("La factura debe contener al menos un producto")
+			}
+		} else {
+			alert("Debe completar todos los datos descriptivos de la factura")
+		}
+
 	}
 
 	return (
@@ -356,45 +371,59 @@ function FacturaCompraForm() {
 			</div>
 			<br />
 			<br />
-			<div className='row justify-content-end'>
-				<label className="mb-3 w-25">
-					Subtotal:
-					<input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-				</label>
-			</div>
-			<div className='row justify-content-end'>
-				<br />
-				<label className="mb-3 col-3">
-					IVA 10.5:
-					<input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-				</label>
-				<br />
-				<br />
-				<label className="mb-3 col-3">
-					IVA 21:
-					<input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-				</label>
-				<br />
-				<br />
-				<label className="mb-3 col-3">
-					Subtotal IVA:
-					<input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-				</label>
-				<br />
-				<label className="mb-3 col-3">
-					Total:
-					<input className="form-control" type="text" id='total_general' onChange={handleEdits} value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-				</label>
-				<br />
-			</div>
+			{factura.tipo_comprobante == "A" && (
+				<>
+					<div className='row justify-content-end'>
+						<label className="mb-3 w-25">
+							Subtotal:
+							<input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+						</label>
+					</div>
+					<div className='row justify-content-end'>
+						<br />
+						<label className="mb-3 col-3">
+							IVA 10.5:
+							<input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+						</label>
+						<br />
+						<br />
+						<label className="mb-3 col-3">
+							IVA 21:
+							<input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+						</label>
+						<br />
+						<br />
+						<label className="mb-3 col-3">
+							Subtotal IVA:
+							<input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+						</label>
+						<br />
+						<label className="mb-3 col-3">
+							Total:
+							<input className="form-control" type="text" id='total_general' onChange={handleEdits} value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+						</label>
+						<br />
+					</div>
+				</>
+			) || (
+					<>
+						<div className='row justify-content-end'>
+							<br />
+							<label className="mb-3 col-3">
+								Total:
+								<input className="form-control" type="text" id='total_general' onChange={handleEdits} value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+							</label>
+							<br />
+						</div>
+					</>
+				)}
+
 			<div className="mb-3 text-end">
 				<Button className="btn btn-primary ms-2" onClick={() => navigate(-1)}>Cancelar</Button>{" "}
 				<Button className="btn btn-success ms-2" onClick={GenerarFactura}>Generar Factura</Button>
 			</div>
 		</div>
 	);
-
-
 }
 
 export default FacturaCompraForm;
