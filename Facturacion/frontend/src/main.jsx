@@ -19,7 +19,7 @@ import PresupuestoList from './components/listaPresupuesto'
 import ProveedorFormulario from './components/proveedorForm'
 import ProductoFormulario from './components/productoForm';
 import FacturaAForm from './components/verFacturaCompraA'
-
+import ListaVentasProductos from './components/listaVentasProductos';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -33,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="facCompraForm/:id" element={<FacturaCompraForm/>} />
             <Route path="listaFacturaVenta" element={<FacturaVentaList/>}/>
             <Route path="facVentaForm" element={<FacVentaFormulario />} />
+            <Route path="listaVentasProductos/:fechaDesde/:fechaHasta" element={<ListaVentasProductos />} />
             <Route path="listaPresupuesto" element={<PresupuestoList/>}/>
             <Route path="presupForm" element={<PresupuestoFormulario/>} />
           </Route>

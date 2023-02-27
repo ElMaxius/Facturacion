@@ -31,7 +31,7 @@ function FacturaCompraForm() {
 	const [iva21, setIva21] = useState(0)
 	const [iva105, setIva105] = useState(0)
 	const [ivaAcumulado, setIva] = useState(0)
-
+	//const [totalGeneral, setTotalGeneral] = useState(0)
 	const params = useParams();
 	const navigate = useNavigate();
 
@@ -87,6 +87,7 @@ function FacturaCompraForm() {
 		let iva21 = 0;
 		let iva105 = 0;
 		let ivaAcumulado = 0;
+		//let totalGeneral = 0;
 		console.log("calcular", i)
 		try {
 			i.forEach((item) => {
@@ -102,10 +103,13 @@ function FacturaCompraForm() {
 			console.error(e.message);
 		}
 		ivaAcumulado = iva21 + iva105;
+		//totalGeneral= subtotal + ivaAcumulado;
 		setSubtotal(subtotal);
 		setIva(ivaAcumulado);
 		setIva21(iva21);
 		setIva105(iva105);
+		//setTotalGeneral(totalGeneral);
+		console.log(factura)
 	};
 	const validarCuit = () => {
 		if (factura.cuit_proveedor != 0) {
@@ -152,7 +156,7 @@ function FacturaCompraForm() {
 		}
 
 	}
-	const agregarItem = () => {
+	const agregarItemTemporal = () => {
 		try {
 			if (factura.numero > 0) {
 				const itemTemporal = {
@@ -165,6 +169,8 @@ function FacturaCompraForm() {
 					subtotalTemp: ((productoSeleccionado.precio * document.getElementById('cantidad').value) * (1 + productoSeleccionado.alicuotaIVA)),
 				};
 				setItemsTemp([...itemsTemp, itemTemporal]);
+				//setFactura({ ...factura, total_general: totalGeneral });
+
 			} else {
 				alert('Debe ingresar un numero de factura')
 			}
@@ -175,37 +181,62 @@ function FacturaCompraForm() {
 
 	};
 
-	const adaptarItems = async (it) => {
+	const agregarItem = async (itemFinal) => {
 		try {
-			for (const item of it) {
+			const result = await axios.post(`http://localhost:8000/itemFacturaCompras`, itemFinal);
+			console.log(result);
+		}
+		catch (e) {
+			console.error(e.message);
+			alert('Ha ocurrido un error al agregar el item: ' + e.message);
+		}
+
+	};
+
+	const adaptarItems = (it) => {
+		try {
+			it.forEach((item) => {
 				const itemFinal = {
 					numero_factura_compra: item.numero_factura_compra,
 					codigo_producto: item.codigo_producto,
 					cantidad: item.cantidad,
 					subtotal: item.subtotalTemp
 				};
-				const result = await axios.post(`http://localhost:8000/itemFacturaCompras`, itemFinal);
-				console.log(result);
-			}
-		} catch (e) {
+
+			});
+
+		}
+		catch (e) {
 			alert('Ha ocurrido un error al adaptar los items: ' + e.message);
 		}
 	};
 
-	const GenerarFactura = async () => {
+	const agregarTotal = () => {
 		try {
 			const total_general = subtotal + ivaAcumulado;
-			console.log(factura)
 			setFactura(prev => {
 				return { ...prev, total_general: total_general }
 			});
-			console.log(factura)
-			await axios.post(`http://localhost:8000/facturaCompras`, factura);
-			adaptarItems(itemsTemp);
-		} catch (e) {
-			alert('Ha ocurrido un error al Generar la Factura: ' + e.message);
 		}
-		//navigate(-1);
+		catch (e) {
+			console.error(e.message);
+			alert('Ha ocurrido un error al setear el total general: ' + e.message);
+		}
+
+	};
+	const agregarFactura = async () => {
+		try {
+			await axios.post(`http://localhost:8000/facturaCompras`, factura);
+		}
+		catch (e) {
+			alert('Ha ocurrido un error al agregar la Factura: ' + e.message);
+		}
+	};
+
+	const GenerarFactura = async () => {
+		agregarTotal();
+		console.log(factura)
+		agregarFactura();
 	}
 
 	return (
@@ -320,7 +351,7 @@ function FacturaCompraForm() {
 					</select>
 				</div>
 				<div className="col-sm-4">
-					<Button variant="primary" className="mb-3 col-3" onClick={agregarItem} >Agregar</Button>
+					<Button variant="primary" className="mb-3 col-3" onClick={agregarItemTemporal} >Agregar</Button>
 				</div>
 			</div>
 			<br />
@@ -352,13 +383,13 @@ function FacturaCompraForm() {
 				<br />
 				<label className="mb-3 col-3">
 					Total:
-					<input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+					<input className="form-control" type="text" id='total_general' onChange={handleEdits} value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
 				</label>
 				<br />
 			</div>
 			<div className="mb-3 text-end">
 				<Button className="btn btn-primary ms-2" onClick={() => navigate(-1)}>Cancelar</Button>{" "}
-				<Button className="btn btn-success ms-2" onClick={adaptarItems}>Generar Factura</Button>
+				<Button className="btn btn-success ms-2" onClick={GenerarFactura}>Generar Factura</Button>
 			</div>
 		</div>
 	);

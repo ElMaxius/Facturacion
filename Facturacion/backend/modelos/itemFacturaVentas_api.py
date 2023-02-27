@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from modelos.facturaVentas_api import FacturaVentasApi
 from modelos.producto_api import ProductoApi
 
 
@@ -14,6 +15,7 @@ class ItemFacturaVentas(BaseModel):
 class ItemFacturaVentasLista(BaseModel):
     id: int
     numero_facturaVenta: int
+    facturaVentas: FacturaVentasApi
     codigo_producto: int
     producto: ProductoApi
     cantidad: int
