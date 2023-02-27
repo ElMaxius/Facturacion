@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Table, Button, Form } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { parseISO, format } from 'date-fns';
+
 
 function FacturaCompraForm() {
 	const [factura, setFactura] = useState({
@@ -24,6 +26,7 @@ function FacturaCompraForm() {
 	const [productos, setProductos] = useState([])
 	const [productoSeleccionado, setProductoSeleccionado] = useState([])
 	const [items, setItems] = useState([]);
+	const [itemsTemp, setItemsTemp] = useState([]);
 	const [subtotal, setSubtotal] = useState(0)
 	const [iva21, setIva21] = useState(0)
 	const [iva105, setIva105] = useState(0)
@@ -52,6 +55,11 @@ function FacturaCompraForm() {
 		//obtenerItems();
 	}, []);
 
+	useEffect(() => {
+		calcular(itemsTemp);
+	}, [itemsTemp]);
+
+
 	const handleEdits = (ev) => {
 		const value = ev.target.value;
 		setFactura(prev => {
@@ -60,15 +68,18 @@ function FacturaCompraForm() {
 	};
 
 	const handleEditsProdSel = (ev) => {
-		const value = ev.target.value;
-		setProductoSeleccionado(prev => {
-			return { ...prev, [ev.target.id]: value }
-		});
+		const codigo = ev.target.value;
+		console.log(codigo);
+		const prodSel = productos.find(x => x.codigo == codigo)
+		console.log(prodSel);
+		setProductoSeleccionado(prodSel);
 	};
 
-	const handleFechaEmisionChange = (fechaSeleccionada) => {
-		const nuevaFactura = { ...factura, fecha: fechaSeleccionada };
-		setFactura(nuevaFactura);
+	const handleFechaEmisionChange = (date) => {
+		setFactura({
+			...factura,
+			fecha: format(parseISO(date.toISOString()), "yyyy-MM-dd"),
+		});
 	};
 
 	const calcular = (i) => {
@@ -79,12 +90,12 @@ function FacturaCompraForm() {
 		console.log("calcular", i)
 		try {
 			i.forEach((item) => {
-				subtotal += item.producto.precio * item.cantidad;
-				if (item.producto.alicuotaIVA == 0.105) {
-					iva105 += item.producto.alicuotaIVA * (item.cantidad * item.producto.precio);
+				subtotal += item.precio * item.cantidad;
+				if (item.iva == 0.105) {
+					iva105 += item.iva * (item.cantidad * item.precio);
 				}
-				else if (item.producto.alicuotaIVA == 0.21) {
-					iva21 += item.producto.alicuotaIVA * (item.cantidad * item.producto.precio);
+				else if (item.iva == 0.21) {
+					iva21 += item.iva * (item.cantidad * item.precio);
 				}
 			});
 		} catch (e) {
@@ -113,7 +124,7 @@ function FacturaCompraForm() {
 			setProveedor(resultado)
 		} catch (e) {
 			console.error(e.message);
-			//alert('Ha ocurrido un error al obtener los datos de la Factura');
+			alert('Ha ocurrido un error al obtener los datos de la Factura ' + e.message);
 		}
 	}
 
@@ -121,11 +132,12 @@ function FacturaCompraForm() {
 		try {
 			let resultado = await axios.get('http://localhost:8000/productos').then(data => data.data)
 			setProductos(resultado)
-			console.log(productos)
+			console.log(resultado);
 		} catch (e) {
 			console.error(e.message);
 			alert('Ha ocurrido un error al obtener los Productos' + e.message);
 		}
+
 
 	}
 
@@ -140,310 +152,217 @@ function FacturaCompraForm() {
 		}
 
 	}
-	const agregarItem = async () => {
-		console.log(productoSeleccionado);
-		// try {
-		// 	const item = {
-		// 		numero_factura_compra: factura.numero,
-		// 		codigo_producto: productoSeleccionado.codigo,
-		// 		cantidad: productoSeleccionado.cantidad,
-		// 	}
-		// 	setItems(item);
-		// 	console.log(items);
-		// }
-		// catch (e) {
-		// 	console.error(e.message);
-		// 	alert('Ha ocurrido un error al agregar el item' + e.message);
-		// }
+	const agregarItem = () => {
+		try {
+			if (factura.numero > 0) {
+				const itemTemporal = {
+					numero_factura_compra: factura.numero,
+					codigo_producto: productoSeleccionado.codigo,
+					descripcion: productoSeleccionado.nombre,
+					precio: productoSeleccionado.precio,
+					iva: productoSeleccionado.alicuotaIVA,
+					cantidad: document.getElementById('cantidad').value,
+					subtotalTemp: ((productoSeleccionado.precio * document.getElementById('cantidad').value) * (1 + productoSeleccionado.alicuotaIVA)),
+				};
+				setItemsTemp([...itemsTemp, itemTemporal]);
+			} else {
+				alert('Debe ingresar un numero de factura')
+			}
+		} catch (e) {
+			console.error(e.message);
+			alert('Ha ocurrido un error al agregar el item: ' + e.message);
+		}
+
+	};
+
+	const adaptarItems = async (it) => {
+		try {
+			for (const item of it) {
+				const itemFinal = {
+					numero_factura_compra: item.numero_factura_compra,
+					codigo_producto: item.codigo_producto,
+					cantidad: item.cantidad,
+					subtotal: item.subtotalTemp
+				};
+				const result = await axios.post(`http://localhost:8000/itemFacturaCompras`, itemFinal);
+				console.log(result);
+			}
+		} catch (e) {
+			alert('Ha ocurrido un error al adaptar los items: ' + e.message);
+		}
+	};
+
+	const GenerarFactura = async () => {
+		try {
+			const total_general = subtotal + ivaAcumulado;
+			console.log(factura)
+			setFactura(prev => {
+				return { ...prev, total_general: total_general }
+			});
+			console.log(factura)
+			await axios.post(`http://localhost:8000/facturaCompras`, factura);
+			adaptarItems(itemsTemp);
+		} catch (e) {
+			alert('Ha ocurrido un error al Generar la Factura: ' + e.message);
+		}
+		//navigate(-1);
 	}
 
-	if (factura.tipo_comprobante === "A") {
-		return (
-			<div className="container">
-				<h2 className="mt-4 mb-4 text-center">
-					<label htmlFor="tipo_comprobante">Tipo de factura:</label>
-					<select id="tipo_comprobante" name="tipo_comprobante" onChange={handleEdits} defaultValue="">
-						<option value=""></option>
-						<option value="A">A</option>
-						<option value="B">B</option>
-						<option value="C">C</option>
-					</select>
-				</h2>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label ms-auto" htmlFor='numero'>Factura Nro:</label>
-					<div className="col-sm-2">
-						<input type="text" className="form-control" id="numero" value={factura.numero} onChange={handleEdits} />
-					</div>
-				</div>
-
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label ms-auto" id="fecha">Fecha de emisión:</label>
-					<div className="col-sm-2">
-						<DatePicker
-							id="fecha"
-							selected={factura.fecha}
-							dateFormat="yyyy-MM-dd"
-							onChange={handleFechaEmisionChange}
-							className="form-control"
-						/>
-					</div>
-				</div>
-
-				<div className="form-group row">
-					<label className="col-sm-1 col-form-label" htmlFor='cuit_proveedor'>CUIT:</label>
-					<div className="col-sm-2">
-						<input type="text" className="form-control" id="cuit_proveedor" value={factura.cuit_proveedor} onChange={handleEdits} />
-					</div>
-
-					<Button variant="primary" className="col-sm-1" onClick={validarCuit}>validar</Button>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Razon social: {proveedor.nombre}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Dirección: {proveedor.direccion}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Telefono: {proveedor.telefono}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Localidad: {proveedor.localidad}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<Table className="mt-3" striped bordered hover>
-					<thead>
-						<tr>
-							<th>Cantidad</th>
-							<th>Codigo</th>
-							{/* <th>Descripcion</th>
-							<th>PU</th>
-							<th>IVA</th>
-							<th>Subtotal</th> */}
-						</tr>
-					</thead>
-					<tbody>
-						{items.map((item, index) => {
-							return (
-								<tr key={index}>
-									<td>{item.cantidad}</td>
-									<td>{item.codigo_producto}</td>
-									{/* <td>{item.producto.nombre}</td>
-									<td>{(item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
-									<td>{item.producto.alicuotaIVA}</td>
-									<td>{(item.cantidad * item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td> */}
-								</tr>
-							);
-						})}
-					</tbody>
-				</Table>
-				<div className='form-group row'>
-					<label className="col-sm-1 col-form-label" htmlFor='cantidad'>Cantidad:</label>
-					<div className="col-sm-2">
-						<input type="numeric" className="form-control" id='cantidad' onChange={handleEditsProdSel} />
-					</div>
-					<label className="col-sm-1 col-form-label" htmlFor='producto'>Producto:</label>
-					<div className="col-sm-3">
-						<Form.Select id='codigo' onChange={handleEditsProdSel}>
-							{productos.map((producto) => (
-								<option key={producto.codigo} value={productoSeleccionado.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
-							))}
-						</Form.Select>
-					</div>
-					<div className="col-sm-4">
-						<Button variant="primary" className="mb-3 col-3" onClick={agregarItem} >Agregar</Button>
-					</div>
-
-				</div>
-				<br />
-				<br />
-				<div className='row justify-content-end'>
-					<label className="mb-3 w-25">
-						Subtotal:
-						<input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-					</label>
-				</div>
-				<div className='row justify-content-end'>
-					<br />
-					<label className="mb-3 col-3">
-						IVA 10.5:
-						<input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-					</label>
-					<br />
-					<br />
-					<label className="mb-3 col-3">
-						IVA 21:
-						<input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-					</label>
-					<br />
-					<br />
-					<label className="mb-3 col-3">
-						Subtotal IVA:
-						<input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-					</label>
-					<br />
-					<label className="mb-3 col-3">
-						Total:
-						<input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-					</label>
-					<br />
-				</div>
-				<div className="mb-3 text-end">
-					<Button className="btn btn-primary ms-2" onClick={() => navigate(-1)}>Cancelar</Button>{" "}
-					<Button className="btn btn-success ms-2" onClick={() => navigate(-1)}>Generar Factura</Button>
+	return (
+		<div className="container">
+			<h2 className="mt-4 mb-4 text-center">
+				<label htmlFor="tipo_comprobante">Tipo de factura:</label>
+				<select id="tipo_comprobante" name="tipo_comprobante" onChange={handleEdits} defaultValue="">
+					<option value=""></option>
+					<option value="A">A</option>
+					<option value="B">B</option>
+					<option value="C">C</option>
+				</select>
+			</h2>
+			<div className="form-group row">
+				<label className="col-sm-2 col-form-label ms-auto" htmlFor='numero'>Factura Nro:</label>
+				<div className="col-sm-2">
+					<input type="text" className="form-control" id="numero" value={factura.numero} onChange={handleEdits} />
 				</div>
 			</div>
-		);
-	} else {
-		return (
-			<div className="container">
-				<h2 className="mt-4 mb-4 text-center">
-					<label htmlFor="tipo_comprobante">Tipo de factura:</label>
-					<select id="tipo_comprobante" name="tipo_comprobante" onChange={handleEdits} defaultValue="">
-						<option value=""></option>
-						<option value="A">A</option>
-						<option value="B">B</option>
-						<option value="C">C</option>
-					</select>
-				</h2>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label ms-auto" htmlFor='numero'>Factura Nro:</label>
-					<div className="col-sm-2">
-						<input type="text" className="form-control" id="numero" value={factura.numero} onChange={handleEdits} />
-					</div>
-				</div>
 
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label ms-auto" id="fecha">Fecha de emisión:</label>
-					<div className="col-sm-2">
-						<DatePicker
-							id="fecha"
-							selected={factura.fecha}
-							dateFormat="yyyy-MM-dd"
-							onChange={handleFechaEmisionChange}
-							className="form-control"
-						/>
-					</div>
-				</div>
-
-				<div className="form-group row">
-					<label className="col-sm-1 col-form-label" htmlFor='cuit_proveedor'>CUIT:</label>
-					<div className="col-sm-2">
-						<input type="text" className="form-control" id="cuit_proveedor" value={factura.cuit_proveedor} onChange={handleEdits} />
-					</div>
-
-					<Button variant="primary" className="col-sm-1" onClick={validarCuit}>validar</Button>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Razon social: {proveedor.nombre}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Dirección: {proveedor.direccion}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Telefono: {proveedor.telefono}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<div className="form-group row">
-					<label className="col-sm-2 col-form-label">
-						Localidad: {proveedor.localidad}
-					</label>
-					<div className="col-sm-2">
-						<p className="form-control-static"></p>
-					</div>
-				</div>
-				<Table className="mt-3" striped bordered hover>
-					<thead>
-						<tr>
-							<th>Cantidad</th>
-							<th>Codigo</th>
-							<th>Descripcion</th>
-							<th>PU</th>
-							<th>IVA</th>
-							<th>Subtotal</th>
-						</tr>
-					</thead>
-					<tbody>
-						{/* {items.map((item, index) => {
-							return (
-								<tr key={index}>
-									<td>{item.cantidad}</td>
-									<td>{item.codigo_producto}</td>
-									<td>{item.producto.nombre}</td>
-									<td>{(item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
-									<td>{item.producto.alicuotaIVA}</td>
-									<td>{(item.cantidad * item.producto.precio * (1+item.producto.alicuotaIVA)).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
-								</tr>
-							);
-						})} */}
-					</tbody>
-				</Table>
-				<div className='form-group row'>
-					<label className="col-sm-1 col-form-label" htmlFor='cantidad'>Cantidad:</label>
-					<div className="col-sm-2">
-						<input type="numeric" className="form-control" id='cantidad' onChange={handleEdits} />
-					</div>
-					<label className="col-sm-1 col-form-label" htmlFor='producto'>Producto:</label>
-					<div className="col-sm-3">
-						<Form.Select >
-							{productos.map((producto) => (
-								<option key={producto.codigo} value={producto.codigo}>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
-							))}
-						</Form.Select>
-					</div>
-					<div className="col-sm-4">
-						<Button variant="primary" className="mb-3 col-3">Agregar</Button>
-					</div>
-				</div>
-				<br />
-				<br />
-
-				<div className='row justify-content-end'>
-					<label className="mb-3 col-3">
-						Total:
-						<input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-					</label>
-					<br />
-				</div>
-				<div className="mb-3 text-end">
-					<Button className="btn btn-primary ms-2" onClick={() => navigate(-1)}>Cancelar</Button>{" "}
-					<Button className="btn btn-success ms-2" onClick={() => navigate(-1)}>Generar Factura</Button>
+			<div className="form-group row">
+				<label className="col-sm-2 col-form-label ms-auto" id="fecha">Fecha de emisión:</label>
+				<div className="col-sm-2">
+					<DatePicker
+						id="fecha"
+						selected={factura.fecha ? parseISO(factura.fecha) : null}
+						dateFormat="yyyy-MM-dd"
+						onChange={handleFechaEmisionChange}
+						className="form-control"
+					/>
 				</div>
 			</div>
-		);
-	}
+
+			<div className="form-group row">
+				<label className="col-sm-1 col-form-label" htmlFor='cuit_proveedor'>CUIT:</label>
+				<div className="col-sm-2">
+					<input type="text" className="form-control" id="cuit_proveedor" value={factura.cuit_proveedor} onChange={handleEdits} />
+				</div>
+
+				<Button variant="primary" className="col-sm-1" onClick={validarCuit}>validar</Button>
+			</div>
+			<div className="form-group row">
+				<label className="col-sm-2 col-form-label">
+					Razon social: {proveedor.nombre}
+				</label>
+				<div className="col-sm-2">
+					<p className="form-control-static"></p>
+				</div>
+			</div>
+			<div className="form-group row">
+				<label className="col-sm-2 col-form-label">
+					Dirección: {proveedor.direccion}
+				</label>
+				<div className="col-sm-2">
+					<p className="form-control-static"></p>
+				</div>
+			</div>
+			<div className="form-group row">
+				<label className="col-sm-2 col-form-label">
+					Telefono: {proveedor.telefono}
+				</label>
+				<div className="col-sm-2">
+					<p className="form-control-static"></p>
+				</div>
+			</div>
+			<div className="form-group row">
+				<label className="col-sm-2 col-form-label">
+					Localidad: {proveedor.localidad}
+				</label>
+				<div className="col-sm-2">
+					<p className="form-control-static"></p>
+				</div>
+			</div>
+			<Table className="mt-3" striped bordered hover>
+				<thead>
+					<tr>
+						<th>Cantidad</th>
+						<th>Codigo</th>
+						<th>Descripcion</th>
+						<th>PU</th>
+						<th>IVA</th>
+						<th>Subtotal</th>
+					</tr>
+				</thead>
+				<tbody>
+					{itemsTemp.map((item, index) => {
+						return (
+							<tr key={index}>
+								<td>{item.cantidad}</td>
+								<td>{item.codigo_producto}</td>
+								<td>{item.descripcion}</td>
+								<td>{(item.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+								<td>{item.iva}</td>
+								<td>{(item.subtotalTemp).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+							</tr>
+						);
+					})}
+				</tbody>
+			</Table>
+			<div className='form-group row'>
+				<label className="col-sm-1 col-form-label" htmlFor='cantidad'>Cantidad:</label>
+				<div className="col-sm-2">
+					<input type="numeric" className="form-control" id='cantidad' />
+				</div>
+				<label className="col-sm-1 col-form-label" htmlFor='producto'>Producto:</label>
+				<div className="col-sm-3">
+					<select className='form-control form-select' id="opcion_Producto" name="opcion_Producto" onChange={handleEditsProdSel}>
+						<option value="" selected></option>
+						{productos.map((producto) => (
+							<option key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
+						))}
+					</select>
+				</div>
+				<div className="col-sm-4">
+					<Button variant="primary" className="mb-3 col-3" onClick={agregarItem} >Agregar</Button>
+				</div>
+			</div>
+			<br />
+			<br />
+			<div className='row justify-content-end'>
+				<label className="mb-3 w-25">
+					Subtotal:
+					<input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+				</label>
+			</div>
+			<div className='row justify-content-end'>
+				<br />
+				<label className="mb-3 col-3">
+					IVA 10.5:
+					<input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+				</label>
+				<br />
+				<br />
+				<label className="mb-3 col-3">
+					IVA 21:
+					<input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+				</label>
+				<br />
+				<br />
+				<label className="mb-3 col-3">
+					Subtotal IVA:
+					<input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+				</label>
+				<br />
+				<label className="mb-3 col-3">
+					Total:
+					<input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+				</label>
+				<br />
+			</div>
+			<div className="mb-3 text-end">
+				<Button className="btn btn-primary ms-2" onClick={() => navigate(-1)}>Cancelar</Button>{" "}
+				<Button className="btn btn-success ms-2" onClick={adaptarItems}>Generar Factura</Button>
+			</div>
+		</div>
+	);
+
 
 }
 
