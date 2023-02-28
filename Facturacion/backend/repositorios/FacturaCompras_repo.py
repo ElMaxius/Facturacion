@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import select, and_
+from sqlalchemy import inspect, select, and_
 from sqlalchemy.orm import Session
 from modelos.facturaCompras_api import FacturaComprasSinNumero
 from modelos.facturaCompras_api import FacturaComprasApi
@@ -40,3 +40,4 @@ class FacturaComprasRepositorio():
                 setattr(objeto, k, v)
         db.commit()
         return objeto
+    

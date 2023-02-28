@@ -44,3 +44,4 @@ def modificar(numero:int, datos:FacturaComprasApi, db = Depends(get_db)):
     if result is None:
         raise HTTPException(status_code=404, detail='Factura no encontrada')
     return result
+

@@ -41,6 +41,7 @@ const FacturaVentaList = () => {
 
   const agregarFactura = () => {
     navegar("../facVentaForm")
+    getDatos()
   }
 
   const consultarVentas = () => {
@@ -139,7 +140,7 @@ const FacturaVentaList = () => {
               <td>{factura.tipo_comprobante}</td>
               <td>{factura.vendedor.cuit}</td>
               <td>{factura.cliente.cuit}</td>
-              <td>{factura.total_general}</td>
+              <td>{(factura.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
               <td>
                 <Link to="" >
                   <Button variant="primary">Ver</Button>

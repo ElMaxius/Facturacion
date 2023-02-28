@@ -53,7 +53,7 @@ export default function ListaProductos() {
                                 <td>{producto.codigo}</td>
                                 <td>{producto.nombre}</td>
                                 <td>{producto.alicuotaIVA}</td>
-                                <td>{producto.precio}</td>
+                                <td>{(producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 <td>
                                     <Link to={"../productoForm/" + producto.codigo}><Button variant="primary">Editar</Button></Link>{' '}
                                     <Button variant="danger" onClick={() => borrar(producto.codigo)}>Eliminar</Button>

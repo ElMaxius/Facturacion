@@ -31,6 +31,7 @@ function FacturaCompraForm() {
 	const [iva21, setIva21] = useState(0)
 	const [iva105, setIva105] = useState(0)
 	const [ivaAcumulado, setIva] = useState(0)
+	const [deletedIdx, setDeletedIdx] = useState(null);
 	const params = useParams();
 	const navigate = useNavigate();
 
@@ -137,7 +138,7 @@ function FacturaCompraForm() {
 			setProveedor(resultado)
 		} catch (e) {
 			console.error(e.message);
-			alert('Ha ocurrido un error al obtener los datos de la Factura ' + e.message);
+			alert('Ha ocurrido un error al obtener los datos del Proveedor' + e.message);
 		}
 	}
 
@@ -251,8 +252,20 @@ function FacturaCompraForm() {
 		} else {
 			alert("Debe completar todos los datos descriptivos de la factura")
 		}
-
 	}
+
+	useEffect(() => {
+		if (deletedIdx !== null) {
+		  setItemsTemp(itemsTemp.filter((_, i) => i !== deletedIdx));
+		  setDeletedIdx(null);
+		}
+	  }, [deletedIdx]);
+
+	const borrarItemTemp = (idx) => {
+		setDeletedIdx(idx);
+		setItemsTemp(itemsTemp.filter((_, i) => i !== idx));
+	  };
+
 
 	return (
 		<div className="container">
@@ -268,7 +281,7 @@ function FacturaCompraForm() {
 			<div className="form-group row">
 				<label className="col-sm-2 col-form-label ms-auto" htmlFor='numero'>Factura Nro:</label>
 				<div className="col-sm-2">
-					<input type="text" className="form-control" id="numero" value={factura.numero} onChange={handleEdits} />
+					<input type="number" min="1" className="form-control" id="numero" value={factura.numero} onChange={handleEdits} />
 				</div>
 			</div>
 
@@ -288,9 +301,8 @@ function FacturaCompraForm() {
 			<div className="form-group row">
 				<label className="col-sm-1 col-form-label" htmlFor='cuit_proveedor'>CUIT:</label>
 				<div className="col-sm-2">
-					<input type="text" className="form-control" id="cuit_proveedor" value={factura.cuit_proveedor} onChange={handleEdits} />
+					<input type="text" className="form-control" id="cuit_proveedor" value={factura.cuit_proveedor} onChange={handleEdits} required/>
 				</div>
-
 				<Button variant="primary" className="col-sm-1" onClick={validarCuit}>validar</Button>
 			</div>
 			<div className="form-group row">
@@ -334,6 +346,7 @@ function FacturaCompraForm() {
 						<th>PU</th>
 						<th>IVA</th>
 						<th>Subtotal</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -346,6 +359,7 @@ function FacturaCompraForm() {
 								<td>{(item.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
 								<td>{item.iva}</td>
 								<td>{(item.subtotalTemp).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+								<td><Button variant="danger" type="button" onClick={() => borrarItemTemp(index)}>Borrar</Button></td>
 							</tr>
 						);
 					})}

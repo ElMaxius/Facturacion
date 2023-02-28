@@ -159,7 +159,7 @@ function FacturaAForm() {
                                 <td>{item.producto.nombre}</td>
                                 <td>{(item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 <td>{item.producto.alicuotaIVA}</td>
-                                <td>{(item.cantidad * item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                <td>{(item.subtotal).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                             </tr>
                         );
                     })}
@@ -167,37 +167,51 @@ function FacturaAForm() {
             </Table>
             <br />
             <br />
-            <div className='row justify-content-end'>
-                <label className="mb-3 w-25">
-                    Subtotal:
-                    <input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-                </label>
-            </div>
-            <div className='row justify-content-end'>
-                <br />
-                <label className="mb-3 col-3">
-                    IVA 10.5:
-                    <input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-                </label>
-                <br />
-                <br />
-                <label className="mb-3 col-3">
-                    IVA 21:
-                    <input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-                </label>
-                <br />
-                <br />
-                <label className="mb-3 col-3">
-                    Subtotal IVA:
-                    <input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-                </label>
-                <br />
-                <label className="mb-3 col-3">
-                    Total:
-                    <input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
-                </label>
-                <br />
-            </div>
+            {factura.tipo_comprobante == "A" && (
+                <>
+                    <div className='row justify-content-end'>
+                        <label className="mb-3 w-25">
+                            Subtotal:
+                            <input className="form-control ms-auto" type="text" value={subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                        </label>
+                    </div>
+                    <div className='row justify-content-end'>
+                        <br />
+                        <label className="mb-3 col-3">
+                            IVA 10.5:
+                            <input className="form-control" type="text" value={iva105.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                        </label>
+                        <br />
+                        <br />
+                        <label className="mb-3 col-3">
+                            IVA 21:
+                            <input className="form-control" type="text" value={iva21.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                        </label>
+                        <br />
+                        <br />
+                        <label className="mb-3 col-3">
+                            Subtotal IVA:
+                            <input className="form-control" type="text" value={ivaAcumulado.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                        </label>
+                        <br />
+                        <label className="mb-3 col-3">
+                            Total:
+                            <input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                        </label>
+                        <br />
+                    </div>
+                </>
+            ) || (
+
+                    <div className='row justify-content-end'>
+                        <br />
+                        <label className="mb-3 col-3">
+                            Total:
+                            <input className="form-control" type="text" value={(subtotal + ivaAcumulado).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} disabled />
+                        </label>
+                        <br />
+                    </div>
+                )}
             <div className="mb-3 text-end">
                 <Button className="btn btn-primary ms-1" onClick={() => navigate(-1)}>Volver</Button>
             </div>

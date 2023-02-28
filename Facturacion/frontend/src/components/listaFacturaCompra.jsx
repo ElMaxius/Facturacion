@@ -19,7 +19,10 @@ const FacturaCompraList = () => {
 
 const agregarFactura = () => {
     navegar("../facCompraForm/"+-1)
+    getDatos()
 }
+
+
 
   return (
     <div className="mt-3">
@@ -47,11 +50,12 @@ const agregarFactura = () => {
                 <td>{factura.fecha}</td>
                 <td>{factura.tipo_comprobante}</td>
                 <td>{factura.proveedor.cuit}</td>
-                <td>{factura.total_general}</td>
+                <td>{(factura.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                 <td>        
-                    <Link to={"../verFacturaCompraA/"+factura.numero} >
+                    <Link to={"../verFacturaCompra/"+factura.numero} >
                     <Button variant="primary">Ver</Button>
                     </Link>
+
                 </td>
                 </tr>
             ))}

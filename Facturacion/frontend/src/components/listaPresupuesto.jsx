@@ -49,7 +49,7 @@ const agregarpresupuesto = () => {
                 <td>{presupuesto.tipo_comprobante}</td>
                 <td>{presupuesto.vendedor.cuit}</td>
                 <td>{presupuesto.cliente.cuit}</td>
-                <td>{presupuesto.total_general}</td>
+                <td>{(presupuesto.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                 <td>        
                     <Link to="" >
                     <Button variant="primary">Ver</Button>
