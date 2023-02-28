@@ -14,7 +14,7 @@ def get_all(db = Depends(get_db)):
     result = repo.get_all(db)
     return result
 
-@facturaVentas_api.get('/{numero}', response_model=FacturaVentasApi)
+@facturaVentas_api.get('/{numero}', response_model=FacturaVentasLista)
 def get_by_id(numero: int, db = Depends(get_db)):
     result = repo.get_by_id(db, numero)
     if result is None:

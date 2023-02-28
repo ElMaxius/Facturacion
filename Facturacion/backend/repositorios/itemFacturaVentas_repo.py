@@ -15,7 +15,7 @@ class ItemFacturaVentasRepositorio():
                                 (fechadesde < FacturaVentasBd.fecha), (FacturaVentasBd.fecha < fechahasta)))).scalars().all()
 
     def get_by_id(self, db: Session, numeroFacturaVenta:int):
-        result = db.execute(select(ItemFacturaVentas_bd).where(ItemFacturaVentas_bd.numero_facturaVenta == numeroFacturaVenta)).scalar()
+        result = db.execute(select(ItemFacturaVentas_bd).where(ItemFacturaVentas_bd.numero_facturaVenta == numeroFacturaVenta)).scalars().all()
         return result
 
     def agregar(self, datos: ItemFacturaVentasApi, db: Session):

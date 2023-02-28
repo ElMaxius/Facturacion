@@ -62,6 +62,10 @@ const FacturaVentaList = () => {
 
   }
 
+  // const verFactura= (numero) => {
+
+  // }
+
   return (
     <div className="container-fluid mt-3">
       <div className="row d-flex align-items-center">
@@ -142,7 +146,7 @@ const FacturaVentaList = () => {
               <td>{factura.cliente.cuit}</td>
               <td>{(factura.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
               <td>
-                <Link to="" >
+                <Link to={"../verFacturaVenta/"+factura.numero} >
                   <Button variant="primary">Ver</Button>
                 </Link>
               </td>

@@ -14,9 +14,9 @@ def get_all(db: Session = Depends(get_db)):
     return repo.get_all(db)
 
 
-@itemPresupuesto_api.get('/{id}', response_model=ItemPresupuestoLista)
-def get_by_id(id: int, db = Depends(get_db)):
-    result = repo.get_by_id(db, id)
+@itemPresupuesto_api.get('/{numeroPresupuesto}', response_model=list[ItemPresupuestoLista])
+def get_by_id(numeroPresupuesto: int, db = Depends(get_db)):
+    result = repo.get_by_id(db, numeroPresupuesto)
     if result is None:
         raise HTTPException(status_code=404, detail='item no encontrado')
     return result

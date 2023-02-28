@@ -3,19 +3,27 @@ import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import { Table, Button } from 'react-bootstrap';
 
-function VerFacturaCompraForm() {
-    const [factura, setFacturaCompra] = useState({
+function VerPresupuesto() {
+    const [presupuesto, setPresupuesto] = useState({
         numero: 0,
-        fecha: "",
+        fecha_de_ingreso: '',
+        valido_hasta: "",
         tipo_comprobante: "",
-        proveedor: {
+        vendedor: {
             cuit: 0,
             nombre: "",
             direccion: "",
             telefono: "",
             localidad: ""
         },
-        total_general: 0.0
+        cliente: {
+            cuit: 0,
+            nombre: "",
+            direccion: "",
+            telefono: "",
+            localidad: ""
+        },
+        total_general: 0.00
     });
     const [subtotal, setSubtotal] = useState(0)
     const [iva21, setIva21] = useState(0)
@@ -26,7 +34,7 @@ function VerFacturaCompraForm() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        obtenerDatosFactura();
+        obtenerDatosPresupuesto();
         obtenerItems();
     }, []);
 
@@ -58,24 +66,24 @@ function VerFacturaCompraForm() {
     };
 
 
-    const obtenerDatosFactura = async () => {
+    const obtenerDatosPresupuesto = async () => {
         try {
-            let resultado = await axios.get(`http://localhost:8000/facturaCompras/${params.id}`).then(data => data.data)
-            setFacturaCompra(resultado)
+            let resultado = await axios.get(`http://localhost:8000/presupuesto/${params.id}`).then(data => data.data)
+            setPresupuesto(resultado)
 
         } catch (e) {
             console.error(e.message);
-            alert('Ha ocurrido un error al obtener los datos de la Factura');
+            alert('Ha ocurrido un error al obtener los datos del Presupuesto');
         }
     }
     const obtenerItems = async () => {
         try {
-            let resultado = await axios.get(`http://localhost:8000/itemFacturaCompras/${params.id}`).then(data => data.data)
+            let resultado = await axios.get(`http://localhost:8000/itemPresupuestos/${params.id}`).then(data => data.data)
             setItems(resultado)
             calcular(resultado)
         } catch (e) {
             console.error(e.message);
-            alert('Ha ocurrido un error al obtener los items de la Factura' + e.message);
+            alert('Ha ocurrido un error al obtener los items de la presupuesto' + e.message);
         }
 
     }
@@ -84,58 +92,107 @@ function VerFacturaCompraForm() {
     return (
         <div className="container">
             <h2 className="mt-4 mb-4 text-center">
-                <label className="form-label">
-                    {"Factura " + factura.tipo_comprobante}
-                </label>
+                <label htmlFor="tipo_comprobante">Tipo de presupuesto: {presupuesto.tipo_comprobante}</label>
             </h2>
             <div className="form-group row">
-                <label className="col-sm-4 col-form-label ms-auto">
-                    Factura Nro: {factura.numero}
-                </label>
+                <label className="col-sm-3 col-form-label ms-auto" htmlFor='numero'>presupuesto Nro{" "}{presupuesto.numero}</label>
             </div>
             <div className="form-group row">
-                <label className="col-sm-4 col-form-label ms-auto">
-                    Fecha de emision: {factura.fecha}
-                </label>
+                <label className="col-sm-3 col-form-label ms-auto" id="fecha">Fecha de emisión:{" "}{presupuesto.fecha_de_ingreso}</label>
             </div>
             <div className="form-group row">
-                <label className="col-sm-10 col-form-label">
-                    Proveedor: {factura.proveedor.nombre}
-                </label>
-                <div className="col-sm-2">
-                    <p className="form-control-static"></p>
+                <label className="col-sm-3 col-form-label ms-auto" id="fecha">Valido hasta:{" "}{presupuesto.valido_hasta}</label>
+            </div>
+            <div className='row'>
+                <div className="col-6 border border-secondary">
+                    <div className="form-group row mt-4 h5">
+                        <label className="col-sm-12 col-form-label">
+                            Datos del Vendedor:
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-3 col-form-label" htmlFor='cuit_vendedor'>CUIT: {presupuesto.vendedor.cuit}</label>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Nombre: {presupuesto.vendedor.nombre}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Dirección: {presupuesto.vendedor.direccion}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Telefono: {presupuesto.vendedor.telefono}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Localidad: {presupuesto.vendedor.localidad}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-sm-10 col-form-label">
-                    CUIT: {factura.proveedor.cuit}
-                </label>
-                <div className="col-sm-2">
-                    <p className="form-control-static"></p>
-                </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-sm-10 col-form-label">
-                    Dirección: {factura.proveedor.direccion}
-                </label>
-                <div className="col-sm-2">
-                    <p className="form-control-static"></p>
-                </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-sm-10 col-form-label">
-                    Telefono: {factura.proveedor.telefono}
-                </label>
-                <div className="col-sm-2">
-                    <p className="form-control-static"></p>
-                </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-sm-10 col-form-label">
-                    Localidad: {factura.proveedor.localidad}
-                </label>
-                <div className="col-sm-2">
-                    <p className="form-control-static"></p>
+                <div className="col-6 border border-secondary">
+                    <div className="form-group row mt-4 h5">
+                        <label className="col-sm-12 col-form-label">
+                            Datos del Cliente:
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-3 col-form-label" htmlFor='cuit_cliente'>CUIT: {presupuesto.cliente.cuit}</label>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Razon social: {presupuesto.cliente.nombre}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Dirección: {presupuesto.cliente.direccion}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Telefono: {presupuesto.cliente.telefono}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                        <label className="col-sm-12 col-form-label">
+                            Localidad: {presupuesto.cliente.localidad}
+                        </label>
+                        <div className="col-sm-12">
+                            <p className="form-control-static"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <Table className="mt-3" striped bordered hover>
@@ -166,7 +223,7 @@ function VerFacturaCompraForm() {
             </Table>
             <br />
             <br />
-            {factura.tipo_comprobante == "A" && (
+            {presupuesto.tipo_comprobante == "A" && (
                 <>
                     <div className='row justify-content-end'>
                         <label className="mb-3 w-25">
@@ -218,4 +275,4 @@ function VerFacturaCompraForm() {
     );
 }
 
-export default VerFacturaCompraForm;
+export default VerPresupuesto;

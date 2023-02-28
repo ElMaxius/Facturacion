@@ -39,6 +39,7 @@ function FacturaVentaFormulario() {
     const [iva21, setIva21] = useState(0)
     const [iva105, setIva105] = useState(0)
     const [ivaAcumulado, setIva] = useState(0)
+    const [deletedIdx, setDeletedIdx] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -193,16 +194,6 @@ function FacturaVentaFormulario() {
         }
     }
 
-    // const obtenerItems = async () => {
-    // 	try {
-    // 		let resultado = await axios.get(`http://localhost:8000/itemFacturaCompras/${params.id}`).then(data => data.data)
-    // 		setItems(resultado)
-    // 		calcular(resultado)
-    // 	} catch (e) {
-    // 		console.error(e.message);
-    // 		alert('Ha ocurrido un error al obtener los datos de la Factura' + e.message);
-    // 	}
-    // }
     const agregarItemTemporal = () => {
         try {
             if (factura.numero > 0) {
@@ -225,6 +216,18 @@ function FacturaVentaFormulario() {
         }
 
     };
+
+    useEffect(() => {
+		if (deletedIdx !== null) {
+		  setItemsTemp(itemsTemp.filter((_, i) => i !== deletedIdx));
+		  setDeletedIdx(null);
+		}
+	  }, [deletedIdx]);
+
+	const borrarItemTemp = (idx) => {
+		setDeletedIdx(idx);
+		setItemsTemp(itemsTemp.filter((_, i) => i !== idx));
+	  };
 
     const agregarItem = async (itemFinal) => {
         try {
@@ -447,6 +450,7 @@ function FacturaVentaFormulario() {
                                 <td>{(item.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 <td>{item.iva}</td>
                                 <td>{(item.subtotalTemp).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
+                                <td><Button variant="danger" type="button" onClick={() => borrarItemTemp(index)}>Borrar</Button></td>
                             </tr>
                         );
                     })}

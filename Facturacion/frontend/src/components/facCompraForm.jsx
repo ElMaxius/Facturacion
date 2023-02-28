@@ -234,7 +234,7 @@ function FacturaCompraForm() {
 			await axios.post(`http://localhost:8000/facturaCompras`, factura);
 		}
 		catch (e) {
-			alert('Ha ocurrido un error al agregar la Factura: ' + e.message);
+			alert('Ha ocurrido un error al agregar la Factura, el numero de factura ya existe: ' + e.message);
 		}
 	};
 

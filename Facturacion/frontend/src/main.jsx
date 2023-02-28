@@ -18,9 +18,10 @@ import FacturaVentaList from './components/listaFacturaVenta'
 import PresupuestoList from './components/listaPresupuesto'
 import ProveedorFormulario from './components/proveedorForm'
 import ProductoFormulario from './components/productoForm';
-import FacturaAForm from './components/verFacturaCompra'
+import VerFacturaCompraForm from './components/verFacturaCompra'
 import ListaVentasProductos from './components/listaVentasProductos';
-
+import VerFacturaVenta from './components/verFacturaVenta';
+import VerPresupuesto from './components/verPresupuesto';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 
@@ -29,13 +30,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/' element={<Home />} >
           <Route path="/comprobantes" element={<Comprobantes/>} >      
             <Route path="listaFacturaCompra" element={<FacturaCompraList/>}/>
-            <Route path="verFacturaCompra/:id" element={<FacturaAForm/>} />
+            <Route path="verFacturaCompra/:id" element={<VerFacturaCompraForm/>} />
             <Route path="facCompraForm/:id" element={<FacturaCompraForm/>} />
             <Route path="listaFacturaVenta" element={<FacturaVentaList/>}/>
             <Route path="facVentaForm" element={<FacVentaFormulario />} />
+            <Route path="verFacturaventa/:id" element={<VerFacturaVenta/>} />
             <Route path="listaVentasProductos/:fechaDesde/:fechaHasta" element={<ListaVentasProductos />} />
             <Route path="listaPresupuesto" element={<PresupuestoList/>}/>
             <Route path="presupForm" element={<PresupuestoFormulario/>} />
+            <Route path="verPresupuesto/:id" element={<VerPresupuesto/>} />
           </Route>
           <Route path="/ListaProductos" element={<ListaProductos/>} />
           <Route path="productoForm/:id" element={<ProductoFormulario/>} />

@@ -13,6 +13,7 @@ class ItemPresupuestoSinId(BaseModel):
 class ItemPresupuestoLista(BaseModel):
     id: int
     numero_presupuesto: int
+    codigo_producto: int
     producto: ProductoApi
     cantidad: int
     subtotal: float

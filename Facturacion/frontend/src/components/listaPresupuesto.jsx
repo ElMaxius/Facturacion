@@ -19,6 +19,7 @@ const PresupuestoList = () => {
 
 const agregarpresupuesto = () => {
     navegar("../presupForm")
+    getDatos()
 }
 
   return (
@@ -45,13 +46,13 @@ const agregarpresupuesto = () => {
             {presupuestos.map((presupuesto) => (
                 <tr key={presupuesto.numero}>
                 <td>{presupuesto.numero}</td>
-                <td>{presupuesto.fecha}</td>
+                <td>{presupuesto.fecha_de_ingreso}</td>
                 <td>{presupuesto.tipo_comprobante}</td>
                 <td>{presupuesto.vendedor.cuit}</td>
                 <td>{presupuesto.cliente.cuit}</td>
                 <td>{(presupuesto.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                 <td>        
-                    <Link to="" >
+                    <Link to={"../verPresupuesto/"+presupuesto.numero} >
                     <Button variant="primary">Ver</Button>
                     </Link>
                 </td>
