@@ -62,10 +62,6 @@ const FacturaVentaList = () => {
 
   }
 
-  // const verFactura= (numero) => {
-
-  // }
-
   return (
     <div className="container-fluid mt-3">
       <div className="row d-flex align-items-center">

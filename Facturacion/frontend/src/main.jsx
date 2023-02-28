@@ -39,6 +39,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="listaPresupuesto" element={<PresupuestoList/>}/>
             <Route path="presupForm" element={<PresupuestoFormulario/>} />
             <Route path="verPresupuesto/:id" element={<VerPresupuesto/>} />
+            <Route path="facVentaForm/:id" element={<FacVentaFormulario />} />
           </Route>
           <Route path="/ListaProductos" element={<ListaProductos/>} />
           <Route path="productoForm/:id" element={<ProductoFormulario/>} />

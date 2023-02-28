@@ -36,7 +36,7 @@ function FacturaCompraForm() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (params.id === "-1") {
+		if (params.id >"0") {
 			setFactura({
 				numero: 0,
 				fecha: "",
@@ -48,6 +48,8 @@ function FacturaCompraForm() {
 			obtenerItems();
 		}
 	}, [params.id]);
+
+
 
 	useEffect(() => {
 		obtenerProductos();
