@@ -9,23 +9,23 @@ export default function ListaProveedores() {
 
     useEffect(() => {
         getDatos()
-    }, []);
+    }, [proveedores.length]);
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/proveedor')
-        console.log(resultado)
         setproveedores(resultado.data)
     }
 
     const agregarproveedor = () => {
         navegar("../proveedorForm/"+-1)
+        getDatos();
     }
 
     const borrar = async (cuit) =>{
         try{
             let response= await axios.delete(`http://localhost:8000/proveedor/${cuit}`)
-        }catch(e){
-            alert(e)
+        }catch(error){
+            alert(error.response.data.detail)
         }
         getDatos();
     }
@@ -34,7 +34,7 @@ export default function ListaProveedores() {
         <div className="mt-3">
 
 
-            <div className='container-fluid'>
+            <div className='container'>
 
                 <Button variant="primary" onClick={agregarproveedor}>Cargar proveedor</Button>
 

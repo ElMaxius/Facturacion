@@ -27,5 +27,5 @@ def agregar(datos: ItemFacturaCompras, db: Session = Depends(get_db)):
     try:
         item = repo.agregar(datos, db)
     except Exception as e:
-        raise HTTPException(status_code=404, detail='no se pudo agregar el vendedor')
+        raise HTTPException(status_code=404, detail='no se pudo agregar el item')
     return item

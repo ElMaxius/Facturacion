@@ -3,98 +3,90 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
 export default function ProductoFormulario() {
-    const [proveedor, setProveedor] = useState();
-    const [cuit, setCuit] = useState('');
+    const [codigo, setCodigo] = useState('');
     const [nombre, setNombre] = useState('');
-    const [direccion, setDireccion] = useState('');
-    const [telefono, setTelefono] = useState('');
-    const [localidad, setLocalidad] = useState('');
+    const [alicuotaIVA, setIva] = useState('');
+    const [precio, setPrecio] = useState('');
     const navigate = useNavigate();
     const params = useParams();
 
     useEffect(() => {
         if (params.id == -1) {
-            setCuit(-1);
+            //setCodigo();
             setNombre('');
-            setDireccion('');
-            setTelefono('');
-            setLocalidad('');
+            setIva(0.21);
+            setPrecio('');
         } else {
-            getProveedor(params.id);
+            getProducto(params.id);
         }
-    }, [params.id]);
-    
-    const getProveedor = async (id) => {
+    }, []);
+
+    const getProducto = async (id) => {
         try {
-            let response = await axios.get(`http://localhost:8000/proveedor/${params.id}`)
-            const prov = response.data;
-            setCuit(prov.cuit);
-            setNombre(prov.nombre);
-            setDireccion(prov.direccion);
-            setTelefono(prov.telefono);
-            setLocalidad(prov.localidad);
+            let response = await axios.get(`http://localhost:8000/productos/${params.id}`)
+            console.log(response.data)
+            const producto = response.data;
+            setNombre(producto.nombre);
+            setIva(producto.alicuotaIVA);
+            setPrecio(producto.precio);
+            setCodigo(producto.codigo);
         } catch (e) {
             console.error(e);
-            alert('Ha ocurrido un error al obtener el proveedor');
+            alert('Ha ocurrido un error al obtener el producto');
         }
     }
 
-    const grabarProveedor = async () => {
+    const grabarProducto = async () => {
         try {
             if (params.id !== "-1") {
-                if (cuit <= 0) {
-                    alert('Ingrese un cuit valido');
-                } else {
-                    await axios.put(`http://localhost:8000/proveedor/${params.id}`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaProveedores'));
-
-                }
+                console.log({ nombre, alicuotaIVA, precio, codigo })
+                await axios.put(`http://localhost:8000/productos/${params.id}`, { nombre, alicuotaIVA, precio, codigo}).then(navigate('../listaProductos'));
             } else {
-                if (cuit <= 0) {
-                    alert('Ingrese un cuit valido');
-                } else {
-                    await axios.post(`http://localhost:8000/proveedor`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaProveedores'));
-
-                }
+                await axios.post(`http://localhost:8000/productos`, { nombre, alicuotaIVA, precio }).then(navigate('../listaProductos'));
             }
         } catch (e) {
             console.error(e);
-            alert('Ha ocurrido un error al grabar el proveedor');
+            alert('Ha ocurrido un error al grabar el producto');
         }
     };
 
-    const handleEdits = (ev) => {
-        const { id, value } = ev.target;
-        setProveedor(prev => ({ ...prev, [id]: value }));
-    };
+    // const handleEdits = (ev) => {
+    //     const { id, value } = ev.target;
+    //     setProveedor(prev => ({ ...prev, [id]: value }));
+    // };
 
 
     return (
         <div className="container-fluid" style={{ width: "50vw" }}>
             <form>
-                <h2 className="mt-3 text-center">Datos del Proveedor</h2>
+                <h2 className="mt-3 text-center">Detalle del Producto</h2>
                 <div className="mb-3 col-2">
-                    <label htmlFor="cuit" className="form-label">CUIT</label>
-                    <input type="number" className="form-control" id="cuit" value={cuit} onChange={(e) => setCuit(e.target.value)} />
+                    <label htmlFor="codigo" className="form-label">Codigo</label>
+                    <input type="number" className="form-control" id="codigo" value={codigo} onChange={(e) => setCodigo(e.target.value)} disabled />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="nombre" className="form-label">Nombre</label>
                     <input type="text" className="form-control" id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="direccion" className="form-label">Direccion</label>
-                    <input type="text" className="form-control" id="direccion" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
+                    <label htmlFor="iva" className="form-label">IVA</label>
+                    <select
+                        className="form-select"
+                        aria-label="Tipo de factura"
+                        onChange={(e) => setIva(e.target.value)}
+                        selected={"0.21"}
+                        >
+                        <option value="0.21">21%</option>
+                        <option value="0.105">10.5%</option>
+                    </select>
                 </div>
                 <div className="mb-3 col-2">
-                    <label htmlFor="telefono" className="form-label">Telefono</label>
-                    <input type="number" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
-                </div>
-                <div className="mb-3 col-2">
-                    <label htmlFor="localidad" className="form-label">localidad</label>
-                    <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
+                    <label htmlFor="precio" className="form-label">Precio</label>
+                    <input type="number" className="form-control" id="precio" value={precio} onChange={(e) => setPrecio(e.target.value)} />
                 </div>
                 <div className="mb-3 text-end">
-                    <button className="btn btn-primary me-1" onClick={grabarProveedor}>Aceptar</button>
-                    <button className="btn btn-secondary ms-1" onClick={() => navigate('../listaProveedores')}>Cancelar</button>
+                    <button className="btn btn-primary me-1" onClick={grabarProducto}>Aceptar</button>
+                    <button className="btn btn-secondary ms-1" onClick={() => navigate('../listaProductos')}>Cancelar</button>
                 </div>
             </form>
         </div>

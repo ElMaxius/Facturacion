@@ -38,15 +38,18 @@ def agregar(datos:ClienteApi, db = Depends(get_db,)):
         if result is None:
             raise HTTPException(status_code=404)
     except Exception as e:
-        raise HTTPException(status_code=404, detail='no se pudo agregar el cliente')
+        raise HTTPException(status_code=404, detail='no se pudo agregar el cliente, ya existe el cuit')
     return result
 
 @cliente_api.delete('/{cuit}', status_code=204)
 def borrar(cuit:int, db = Depends(get_db)):
-    result = repo.borrar(db, cuit)
-    if result is None:
-        raise HTTPException(status_code=404, detail='cliente no encontrado')
-    return result
+    try:
+        result = repo.borrar(db, cuit)
+        if result is None:
+            raise HTTPException(status_code=404, detail='cliente no encontrado')
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=401, detail='No se puede eliminar el cliente ya que el mismo posee comprobantes asociados')
 
 @cliente_api.put('/{cuit}', response_model=ClienteApi)
 def modificar(cuit:int, datos:ClienteApi, db = Depends(get_db)):

@@ -9,7 +9,7 @@ const FacturaCompraList = () => {
 
   useEffect(() => {
     getDatos()
-  }, []);
+  }, [facturas.length]);
 
   const getDatos = async () => {
     let resultado = await axios.get('http://localhost:8000/facturaCompras')
@@ -18,8 +18,11 @@ const FacturaCompraList = () => {
 }
 
 const agregarFactura = () => {
-    navegar("../facCompraForm")
+    navegar("../facCompraForm/"+-1)
+    getDatos()
 }
+
+
 
   return (
     <div className="mt-3">
@@ -47,11 +50,12 @@ const agregarFactura = () => {
                 <td>{factura.fecha}</td>
                 <td>{factura.tipo_comprobante}</td>
                 <td>{factura.proveedor.cuit}</td>
-                <td>{factura.total_general}</td>
+                <td>{(factura.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                 <td>        
-                    <Link to="/facturas-compra/nueva" >
+                    <Link to={"../verFacturaCompra/"+factura.numero} >
                     <Button variant="primary">Ver</Button>
                     </Link>
+
                 </td>
                 </tr>
             ))}

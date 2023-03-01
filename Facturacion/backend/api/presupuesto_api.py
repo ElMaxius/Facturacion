@@ -28,3 +28,9 @@ def agregar(datos:PresupuestoApi, db = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     return result
 
+@presupuesto_api.get('/{numero}', response_model=PresupuestoLista)
+def get_by_id(numero: int, db = Depends(get_db)):
+    result = repo.get_by_id(db, numero)
+    if result is None:
+        raise HTTPException(status_code=404, detail='Presupuesto no encontrado')
+    return result

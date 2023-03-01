@@ -9,11 +9,10 @@ export default function ListaProductos() {
 
     useEffect(() => {
         getDatos()
-    }, []);
+    }, [productos.length]);
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/productos')
-        console.log(resultado)
         setProductos(resultado.data)
     }
 
@@ -21,11 +20,11 @@ export default function ListaProductos() {
         navegar("../productoForm/" + -1)
     }
 
-    const borrar = async (cuit) => {
+    const borrar = async (codigo) => {
         try {
             let response = await axios.delete(`http://localhost:8000/productos/${codigo}`)
-        } catch (e) {
-            alert(e)
+        } catch (error) {
+            alert(error.response.data.detail)
         }
         getDatos();
     }
@@ -34,7 +33,7 @@ export default function ListaProductos() {
         <div className="mt-3">
 
 
-            <div className='container-fluid'>
+            <div className='container' >
 
                 <Button variant="primary" onClick={agregarproducto}>Cargar producto</Button>
 
@@ -54,9 +53,9 @@ export default function ListaProductos() {
                                 <td>{producto.codigo}</td>
                                 <td>{producto.nombre}</td>
                                 <td>{producto.alicuotaIVA}</td>
-                                <td>{producto.precio}</td>
+                                <td>{(producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                                 <td>
-                                    <Link to={"../productoForm/" + producto.cuit}><Button variant="primary">Editar</Button></Link>{' '}
+                                    <Link to={"../productoForm/" + producto.codigo}><Button variant="primary">Editar</Button></Link>{' '}
                                     <Button variant="danger" onClick={() => borrar(producto.codigo)}>Eliminar</Button>
                                 </td>
                             </tr>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
-export default function ProveedorFormulario() {
+export default function ClienteFormulario() {
     const [cuit, setCuit] = useState('');
     const [nombre, setNombre] = useState('');
     const [direccion, setDireccion] = useState('');
@@ -19,13 +19,13 @@ export default function ProveedorFormulario() {
             setTelefono('');
             setLocalidad('');
         } else {
-            getProveedor(params.id);
+            getCliente(params.id);
         }
     }, [params.id]);
     
-    const getProveedor = async (id) => {
+    const getCliente = async (id) => {
         try {
-            let response = await axios.get(`http://localhost:8000/proveedor/${params.id}`)
+            let response = await axios.get(`http://localhost:8000/cliente/${params.id}`)
             const prov = response.data;
             setCuit(prov.cuit);
             setNombre(prov.nombre);
@@ -34,24 +34,24 @@ export default function ProveedorFormulario() {
             setLocalidad(prov.localidad);
         } catch (e) {
             console.error(e);
-            alert('Ha ocurrido un error al obtener el proveedor');
+            alert('Ha ocurrido un error al obtener el cliente');
         }
     }
 
-    const grabarProveedor = async () => {
+    const grabarCliente = async () => {
         try {
             if (params.id !== "-1") {
                 if (cuit <= 0) {
                     alert('Ingrese un cuit valido');
                 } else {
-                    await axios.put(`http://localhost:8000/proveedor/${params.id}`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaProveedores'));
+                    await axios.put(`http://localhost:8000/cliente/${params.id}`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaClientes'));
 
                 }
             } else {
                 if (cuit <= 0) {
                     alert('Ingrese un cuit valido');
                 } else {
-                    await axios.post(`http://localhost:8000/proveedor`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaProveedores'));
+                    await axios.post(`http://localhost:8000/cliente`, { cuit, nombre, direccion, telefono, localidad }).then(navigate('../listaClientes'));
 
                 }
             }
@@ -63,14 +63,14 @@ export default function ProveedorFormulario() {
 
     const handleEdits = (ev) => {
         const { id, value } = ev.target;
-        setProveedor(prev => ({ ...prev, [id]: value }));
+        setCliente(prev => ({ ...prev, [id]: value }));
     };
 
 
     return (
         <div className="container-fluid" style={{ width: "50vw" }}>
             <form>
-                <h2 className="mt-3 text-center">Datos del Proveedor</h2>
+                <h2 className="mt-3 text-center">Datos del Cliente</h2>
                 <div className="mb-3 col-3">
                     <label htmlFor="cuit" className="form-label">CUIT</label>
                     <input type="number" className="form-control" id="cuit" value={cuit} onChange={(e) => setCuit(e.target.value)} />
@@ -83,17 +83,17 @@ export default function ProveedorFormulario() {
                     <label htmlFor="direccion" className="form-label">Direccion</label>
                     <input type="text" className="form-control" id="direccion" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
                 </div>
-                <div className="mb-3 col-3">
+                <div className="mb-3 col-2">
                     <label htmlFor="telefono" className="form-label">Telefono</label>
                     <input type="text" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
                 </div>
-                <div className="mb-3 col-4">
+                <div className="mb-3 col-2">
                     <label htmlFor="localidad" className="form-label">localidad</label>
                     <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
                 </div>
                 <div className="mb-3 text-end">
-                    <button className="btn btn-primary me-1" onClick={grabarProveedor}>Aceptar</button>
-                    <button className="btn btn-secondary ms-1" onClick={() => navigate('../listaProveedores')}>Cancelar</button>
+                    <button className="btn btn-primary me-1" onClick={grabarCliente}>Aceptar</button>
+                    <button className="btn btn-secondary ms-1" onClick={() => navigate('../listaClientes')}>Cancelar</button>
                 </div>
             </form>
         </div>

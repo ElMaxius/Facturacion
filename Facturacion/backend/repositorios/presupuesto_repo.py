@@ -29,3 +29,7 @@ class PresupuestoRepositorio():
         except  IntegrityError as e:
             raise RuntimeError(f"No se ha podido agregar el Presupuesto:{e}")
         return nuevo_Presupuesto_db
+    
+    def get_by_id(self, db: Session, numero:int):
+        result = db.execute(select(PresupuestoBd).where(PresupuestoBd.numero == numero)).scalar()
+        return result

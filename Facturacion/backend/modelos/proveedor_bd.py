@@ -8,5 +8,5 @@ class ProveedorBd(BaseBd):
     cuit = Column(BIGINT(), primary_key=True)
     nombre = Column(String(50), nullable=False)
     direccion = Column(String(50), nullable=False, default="NA")
-    telefono = Column(String, nullable=True)
+    telefono = Column(String(20))
     localidad = Column(String(50), nullable=False, default ="NA")

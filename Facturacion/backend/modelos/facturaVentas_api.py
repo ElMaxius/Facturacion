@@ -21,7 +21,7 @@ class FacturaVentasLista(BaseModel):
     numero: int
     fecha: date
     tipo_comprobante: str
-    presupuesto: PresupuestoApi 
+    presupuesto: PresupuestoApi = None
     vendedor: VendedorApi 
     cliente: ClienteApi 
     total_general: float

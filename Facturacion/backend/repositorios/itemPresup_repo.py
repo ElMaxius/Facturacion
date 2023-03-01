@@ -10,8 +10,8 @@ class ItemPresupuestoRepositorio():
     def get_all(self, db: Session):
         return db.execute(select(ItemPresup_bd)).scalars().all()
 
-    def get_by_id(self, db: Session, id:int):
-        result = db.execute(select(ItemPresup_bd).where(ItemPresup_bd.id == id)).scalar()
+    def get_by_id(self, db: Session, numeroPresupuesto:int):
+        result = db.execute(select(ItemPresup_bd).where(ItemPresup_bd.numero_presupuesto == numeroPresupuesto)).scalars().all()
         return result
 
     def agregar(self, datos: ItemPresupuestoApi, db: Session):
