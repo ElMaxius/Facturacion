@@ -245,7 +245,7 @@ function FacturaCompraForm() {
 	};
 
 	const GenerarFactura = async () => {
-		if ((factura.tipo_comprobante != "") && (factura.numero != 0) && (factura.fecha != "")) {
+		if ((factura.tipo_comprobante != "") && (factura.numero != 0) && (factura.fecha != "") && (factura.cuit_proveedor != 0)) {
 			if (itemsTemp.length > 0) {
 				agregarTotal();
 				console.log(factura)

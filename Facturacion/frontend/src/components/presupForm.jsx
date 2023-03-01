@@ -286,7 +286,9 @@ function PresupuestoFormulario() {
         if (
           presupuesto.tipo_comprobante != "" &&
           presupuesto.numero != 0 &&
-          presupuesto.fecha != ""
+          presupuesto.fecha != "" &&
+          presupuesto.cuit_cliente != 0 &&
+          presupuesto.cuit_vendedor != 0
         ) {
           if (itemsTemp.length > 0) {
             agregarTotal();

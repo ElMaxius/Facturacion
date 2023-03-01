@@ -346,7 +346,9 @@ function FacturaVentaFormulario() {
         if (
             factura.tipo_comprobante != "" &&
             factura.numero != 0 &&
-            factura.fecha != ""
+            factura.fecha != "" &&
+            factura.cuit_cliente !=0 &&
+            factura.cuit_vendedor !=0
         ) {
             if (itemsTemp.length > 0) {
                 agregarTotal();
