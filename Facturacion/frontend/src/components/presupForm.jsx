@@ -245,22 +245,20 @@ function PresupuestoFormulario() {
 
     const adaptarItems = async (it) => {
         try {
-            it.forEach((item, i) => {
-                const itemFinal = {
-                    numero_presupuesto: item.numero_presupuesto_venta,
-                    codigo_producto: item.codigo_producto,
-                    cantidad: item.cantidad,
-                    subtotal: item.subtotalTemp
-                };
-                setTimeout(() => {
-                    agregarItem(itemFinal)
-                }, 200*i);
-            });
+          for (let i = 0; i < it.length; i++) {
+            const item = it[i];
+            const itemFinal = {
+              numero_presupuesto: item.numero_presupuesto_venta,
+              codigo_producto: item.codigo_producto,
+              cantidad: item.cantidad,
+              subtotal: item.subtotalTemp,
+            };
+            await agregarItem(itemFinal);
+          }
+        } catch (e) {
+          alert("Ha ocurrido un error al adaptar los items: " + e.message);
         }
-        catch (e) {
-            alert('Ha ocurrido un error al adaptar los items: ' + e.message);
-        }
-    };
+      };
 
     const agregarTotal = () => {
         try {
@@ -285,21 +283,23 @@ function PresupuestoFormulario() {
     };
 
     const GenerarPresupuesto = async () => {
-        if ((presupuesto.tipo_comprobante != "") && (presupuesto.numero != 0) && (presupuesto.fecha != "")) {
-            if (itemsTemp.length > 0) {
-                agregarTotal();
-                console.log(presupuesto)
-                agregarPresupuesto().then(adaptarItems(itemsTemp));
-                //adaptarItems(itemsTemp)
-                navigate(-1)
-            } else {
-                alert("el presupuesto debe contener al menos un producto")
-            }
+        if (
+          presupuesto.tipo_comprobante != "" &&
+          presupuesto.numero != 0 &&
+          presupuesto.fecha != ""
+        ) {
+          if (itemsTemp.length > 0) {
+            agregarTotal();
+            await agregarPresupuesto();
+    
+            await adaptarItems(itemsTemp);
+    
+            navigate(-1);
+          } else {
+            alert("el presupuesto debe contener al menos un producto");
+          }
         } else {
-            alert("Debe completar todos los datos descriptivos del presupuesto")
-        }
-
-    }
+          alert("Debe completar todos los datos descriptivos del presupuesto")}}
 
     return (
         <div className="container">

@@ -67,17 +67,19 @@ function FacturaVentaFormulario() {
     console.log(params.id)
 
     useEffect(() => {
-        obtenerDatosPresupuesto();
-        obtenerItems();
-
+        if (params.id != -1) {
+            obtenerDatosPresupuesto();
+            obtenerItems();
+        }
     }, []);
 
     const obtenerDatosPresupuesto = async () => {
         try {
             let resultado = await axios.get(`http://localhost:8000/presupuesto/${params.id}`).then(data => data.data)
             setPresupuesto(resultado)
-            setFactura(f => ({ ...f, numero: resultado.numero,  
-                fecha: resultado.fecha_de_ingreso, 
+            setFactura(f => ({
+                ...f, numero: resultado.numero,
+                fecha: resultado.fecha_de_ingreso,
                 cuit_vendedor: resultado.vendedor.cuit,
                 cuit_cliente: resultado.cliente.cuit,
                 total_general: resultado.total_general
@@ -93,8 +95,8 @@ function FacturaVentaFormulario() {
     const obtenerItems = async () => {
         try {
             let resultado = await axios.get(`http://localhost:8000/itemPresupuestos/${params.id}`).then(data => data.data)
-            resultado.map((r) => {
-                const item={
+            const mapeado = resultado.map((r) => {
+                const item = {
                     numero_factura_venta: factura.numero,
                     codigo_producto: r.producto.codigo,
                     descripcion: r.producto.nombre,
@@ -103,8 +105,9 @@ function FacturaVentaFormulario() {
                     cantidad: r.cantidad,
                     subtotalTemp: r.subtotal
                 }
-                setItemsTemp([...itemsTemp, item]);              
-            })         
+                return item
+            })
+            setItemsTemp(mapeado);
             calcular(resultado)
         } catch (e) {
             console.error(e.message);
@@ -257,7 +260,6 @@ function FacturaVentaFormulario() {
 
     const agregarItemTemporal = () => {
         try {
-            console.log(productoSeleccionado)
             if (document.getElementById('cantidad').value) {
                 const itemTemporal = {
                     numero_factura_venta: factura.numero,
@@ -520,7 +522,7 @@ function FacturaVentaFormulario() {
                 <div className="col-sm-3">
                     <select className='form-control form-select' id="opcion_Producto" name="opcion_Producto" onChange={handleEditsProdSel}>
                         {productos.map((producto, index) => (
-                            <option selected={index=0 ? true : false} key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
+                            <option selected={index = 0 ? true : false} key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
                         ))}
                     </select>
                 </div>
