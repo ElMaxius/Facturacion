@@ -55,7 +55,7 @@ function PresupuestoFormulario() {
     }, []);
 
     const buscarUltimo = (result) => {
-        if(result.length>0){
+        if(result){
             const numeroMaximo = result.reduce((a, b) => a.numero > b.numero ? a : b).numero;
             console.log(numeroMaximo)
             setPresupuesto(f => ({ ...f, numero: numeroMaximo + 1 }))
