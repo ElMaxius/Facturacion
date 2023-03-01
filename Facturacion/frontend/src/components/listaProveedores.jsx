@@ -13,7 +13,6 @@ export default function ListaProveedores() {
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/proveedor')
-        console.log(resultado)
         setproveedores(resultado.data)
     }
 
@@ -25,8 +24,8 @@ export default function ListaProveedores() {
     const borrar = async (cuit) =>{
         try{
             let response= await axios.delete(`http://localhost:8000/proveedor/${cuit}`)
-        }catch(e){
-            alert(e)
+        }catch(error){
+            alert(error.response.data.detail)
         }
         getDatos();
     }

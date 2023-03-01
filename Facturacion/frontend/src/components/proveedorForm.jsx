@@ -57,7 +57,7 @@ export default function ProveedorFormulario() {
             }
         } catch (e) {
             console.error(e);
-            alert('Ha ocurrido un error al grabar el proveedor');
+            alert(e.response.data.detail);
         }
     };
 

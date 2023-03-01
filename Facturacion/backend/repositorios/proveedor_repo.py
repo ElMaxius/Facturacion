@@ -22,12 +22,18 @@ class ProveedorRepositorio():
         return nuevo_proveedor_bd
     
     def borrar(self, db:Session, cuit:int):
-        objeto = self.get_by_id(db, cuit)
-        if objeto is None:
-            return None          
-        db.delete(objeto)
-        db.commit()
-        return objeto
+        try:
+            objeto = self.get_by_id(db, cuit)
+            if objeto is None:
+                return None          
+            db.delete(objeto)
+            db.commit()
+            return objeto
+        except Exception as e:
+            raise Exception(("No es posible eliminar un proveedor con comprobantes asociados"))
+
+    
+
     
     def modificar(self, db:Session, cuit:int, datos:ProveedorApi):
         objeto:ProveedorBd = self.get_by_id(db, cuit)

@@ -9,14 +9,10 @@ class ClienteRepositorio():
     def get_all(self, db: Session):
         return db.execute(select(ClienteBd)).scalars().all()
     
-    ##def get_all_proveedores(self, db: Session):
-    ##    return db.execute(select(ClienteBd).where(ClienteBd.tipo == 'p' or 'P')).scalars().all()
     
-    def get_all_clientes(self, db: Session):
-        return db.execute(select(ClienteBd)).scalars().all()
+    # def get_all_clientes(self, db: Session):
+    #     return db.execute(select(ClienteBd)).scalars().all()
     
-    ##def get_all_vendedores(self, db: Session):
-    ##    return db.execute(select(ClienteBd).where(ClienteBd.tipo == 'v' or 'V')).scalars().all()
     
     def get_by_id(self, db: Session, cuit:int):
         result = db.execute(select(ClienteBd).where(ClienteBd.cuit == cuit)).scalar()
@@ -26,7 +22,6 @@ class ClienteRepositorio():
         nueva_Cliente_db: ClienteBd = ClienteBd(**datos.dict())
         db.add(nueva_Cliente_db)
         db.commit()
-
         return nueva_Cliente_db
     
     def borrar(self, db:Session, cuit:int):

@@ -23,8 +23,8 @@ export default function ListaProductos() {
     const borrar = async (codigo) => {
         try {
             let response = await axios.delete(`http://localhost:8000/productos/${codigo}`)
-        } catch (e) {
-            alert(e)
+        } catch (error) {
+            alert(error.response.data.detail)
         }
         getDatos();
     }

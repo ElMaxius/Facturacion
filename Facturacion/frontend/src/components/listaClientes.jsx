@@ -25,7 +25,7 @@ export default function ListaClientes() {
         try{
             let response= await axios.delete(`http://localhost:8000/cliente/${cuit}`)
         }catch(e){
-            alert(e)
+            alert(e.response.data.detail)
         }
         getDatos();
     }

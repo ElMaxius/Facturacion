@@ -57,7 +57,7 @@ export default function ClienteFormulario() {
             }
         } catch (e) {
             console.error(e);
-            alert('Ha ocurrido un error al grabar el cliente');
+            alert(e.response.data.detail);
         }
     };
 

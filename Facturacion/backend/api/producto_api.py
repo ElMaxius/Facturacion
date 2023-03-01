@@ -30,10 +30,14 @@ def agregar(datos:ProductoSinCodigo, db = Depends(get_db,)):
 
 @producto_api.delete('/{codigo}', status_code=204)
 def borrar(codigo:int, db = Depends(get_db)):
-    result = repo.borrar(db, codigo)
-    if result is None:
-        raise HTTPException(status_code=404, detail='Producto no encontrado')
-    return result
+    try:
+        result = repo.borrar(db, codigo)
+        if result is None:
+            raise HTTPException(status_code=404, detail='Producto no encontrado')
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=401, detail='No es posible borrar un producto asociado a comprobantes')
+
 
 @producto_api.put('/{codigo}', response_model=ProductoApi)
 def modificar(codigo:int, datos:ProductoApi, db = Depends(get_db)):

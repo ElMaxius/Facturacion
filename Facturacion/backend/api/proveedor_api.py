@@ -28,15 +28,18 @@ def agregar(datos:ProveedorApi, db = Depends(get_db,)):
         if result is None:
             raise HTTPException(status_code=404)
     except Exception as e:
-        raise HTTPException(status_code=404, detail='no se pudo agregar el proveedor')
+        raise HTTPException(status_code=401, detail='no se pudo agregar el proveedor, ya existe la cuit')
     return result
 
 @proveedor_api.delete('/{cuit}', status_code=204)
 def borrar(cuit:int, db = Depends(get_db)):
-    result = repo.borrar(db, cuit)
-    if result is None:
-        raise HTTPException(status_code=404, detail='proveedor no encontrado')
-    return result
+    try:
+        result = repo.borrar(db, cuit)
+        if result is None:
+            raise HTTPException(status_code=404, detail='proveedor no encontrado')
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=401, detail='No se puede eliminar el proveedor, el mismo tiene documentos asociados')
 
 @proveedor_api.put('/{cuit}', response_model=ProveedorApi)
 def modificar(cuit:int, datos:ProveedorApi, db = Depends(get_db)):
