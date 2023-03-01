@@ -33,7 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="verFacturaCompra/:id" element={<VerFacturaCompraForm/>} />
             <Route path="facCompraForm/:id" element={<FacturaCompraForm/>} />
             <Route path="listaFacturaVenta" element={<FacturaVentaList/>}/>
-            <Route path="facVentaForm" element={<FacVentaFormulario />} />
+            <Route path="facVentaForm/:id" element={<FacVentaFormulario />} />
             <Route path="verFacturaventa/:id" element={<VerFacturaVenta/>} />
             <Route path="listaVentasProductos/:fechaDesde/:fechaHasta" element={<ListaVentasProductos />} />
             <Route path="listaPresupuesto" element={<PresupuestoList/>}/>

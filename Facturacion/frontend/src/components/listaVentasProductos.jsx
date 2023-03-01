@@ -32,7 +32,6 @@ const ListaVentasProductos = () => {
         <Table className="mt-3" striped bordered hover>
           <thead>
             <tr>
-              <th>Fecha</th>
               <th>Codigo</th>
               <th>Descripcion</th>
               <th>Cantidad Vendida</th>
@@ -42,12 +41,10 @@ const ListaVentasProductos = () => {
           <tbody>
             {ventas.map((venta, index) => (
               <tr key={index}>
-                <td>{venta.facturaVentas.fecha}</td>
-                <td>{venta.producto.codigo}</td>
-                <td>{venta.producto.nombre}</td>
+                <td>{venta.codigo_producto}</td>
+                <td>{venta.nombre}</td>
                 <td>{venta.cantidad}</td>
-                <td>{venta.subtotal}</td>
-
+                <td>{(venta.total_general).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
               </tr>
             ))}
           </tbody>

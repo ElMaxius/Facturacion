@@ -24,6 +24,16 @@ class ItemFacturaVentasLista(BaseModel):
     class Config:
         orm_mode = True
 
+class ItemFacturaVentasFechas(BaseModel):
+    codigo_producto: int
+    nombre: str
+    cantidad: int
+    total_general: int
+
+    class Config:
+        orm_mode = True
+
+
 
 class ItemFacturaVentasApi(ItemFacturaVentas):
     id: int

@@ -12,8 +12,6 @@ class ItemPresupuestoRepositorio():
 
     def get_by_id(self, db: Session, numeroPresupuesto:int):
         result = db.execute(select(ItemPresup_bd).where(ItemPresup_bd.numero_presupuesto == numeroPresupuesto)).scalars().all()
-        print("..................ffffffffffffffffffffffffffff...............................")
-        print(result)
         return result
 
     def agregar(self, datos: ItemPresupuestoApi, db: Session):
