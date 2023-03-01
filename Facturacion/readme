@@ -1,0 +1,61 @@
+Facturación
+
+Realizar un programa de gestión comercial básico, con la siguiente funcionalidad:
+
+Se deben poder ingresar presupuestos, facturas de venta y de compra 
+
+•	Presupuesto: fecha de ingreso, fecha tope de validez del presupuesto, nro de presupuesto, letra, vendedor, datos del cliente (nombre, dir, tel, cuit, localidad), detalle de lo presupuestado con precios, total general.
+•	Factura de venta: fecha, nro de factura, letra, vendedor, datos del cliente (nombre, dir, tel, cuit, localidad), detalle de lo vendido con precios, total general. Opcional: nro de presupuesto.
+•	Factura de compra: fecha, nro de factura, letra, datos del proveedor (nombre, dir, tel, cuit, localidad), detalle de lo comprado con precios, total general. (no debe llevar nro de presupuesto)
+
+El detalle de cada documento contendrá una o más filas con los siguientes datos: cantidad, codigo de producto, descripcion de producto, precio unitario, porcentaje de iva aplicado (21 o 10.5), subtotal.
+En los documentos que incluyen precios (facturas/presupuesto) se deberán discriminar los impuestos cuando se trate de una factura/presup A. En el caso de las fact B, C o presupuestos, no se discriminan los impuestos.
+
+Ejemplo:
+- se compran 
+    2 unidades de ProductoA, precio unitario (sin iva) $10, iva aplicado 21%
+    1 unidad de ProductoB, precio unitario sin iva $5, iva aplicado 10.5
+
+Factura A 
+----------------------------------------------------------------
+
+Cantidad	Codigo	Descripcion	PU	IVA	Subtotal
+2	PA	Producto A	10.00	21.00	20.00
+1	PB	Producto B	5.00	10.50	5.00
+					
+				Subtotal	25.00
+
+
+IVA 21	IVA 10.5	Subtotal IVA	Total General
+4.20	0.53	4.73	29.73
+
+
+
+Factura B-C / Presupuesto
+----------------------------------------------------------------
+
+Cantidad	Codigo	Descripcion	PU	IVA	Subtotal
+2	PA	Producto A	12.10	21.00	24.20
+1	PB	Producto B	5.53	10.5	5.53
+					
+				Total general	29.73
+
+•	Los números de factura/presupuesto a Cliente se generan automáticamente, sin dejar nros sin usar (no se puede usar un autoincremental)
+•	Los números de factura de Proveedor se ingresan como dato
+•	Mantener datos de productos, clientes, proveedores, vendedores.
+
+Consultas
+•	Se deben poder consultar las facturas / presupuestos realizados entre dos fechas.
+•	Se deben poder consultar los productos vendidos en un rango de fechas, mostrando  codigo - descripcion - cantidad vendida - monto total (con iva)
+  
+Extras
+•	Hacer que una factura pueda generarse en base a un presupuesto: se ingresa el nro de presupuesto y la factura se llena sola con los datos, dejando al usuario la opción de modificar (no aceptar la factura automáticamente).
+
+Acorde a lo que dimos en clase, las tecnologías a usar son las siguientes:
+Backend: FastAPI
+Frontend: React
+BD: PostgreSql
+
+--------------------------------------------
+para ejecutar Front -> npm run dev
+para ejecutar Back -> python facturacion.py
