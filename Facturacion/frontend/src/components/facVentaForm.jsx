@@ -12,7 +12,7 @@ function FacturaVentaFormulario() {
         numero: 0,
         fecha: "",
         tipo_comprobante: "",
-        numero_presupuesto:0,
+        numero_presupuesto: 0,
         cuit_vendedor: 0,
         cuit_cliente: 0,
         total_general: 0.0
@@ -39,18 +39,79 @@ function FacturaVentaFormulario() {
     const [iva21, setIva21] = useState(0)
     const [iva105, setIva105] = useState(0)
     const [ivaAcumulado, setIva] = useState(0)
-    const [deletedIdx, setDeletedIdx] = useState(null);
+    const [presupuesto, setPresupuesto] = useState({
+        numero: 0,
+        fecha_de_ingreso: '',
+        valido_hasta: "",
+        tipo_comprobante: "",
+        vendedor: {
+            cuit: 0,
+            nombre: "",
+            direccion: "",
+            telefono: "",
+            localidad: ""
+        },
+        cliente: {
+            cuit: 0,
+            nombre: "",
+            direccion: "",
+            telefono: "",
+            localidad: ""
+        },
+        total_general: 0.00
+    })
+    const [items, setItems] = useState(null)
     const navigate = useNavigate();
+    const params = useParams();
+
+    console.log(params.id)
 
     useEffect(() => {
-        setFactura({
-            numero: 0,
-            fecha: "",
-            tipo_comprobante: "",
-            cuit_proveedor: 0,
-            total_general: 0.0
-        })
+        obtenerDatosPresupuesto();
+        obtenerItems();
+
     }, []);
+
+    const obtenerDatosPresupuesto = async () => {
+        try {
+            let resultado = await axios.get(`http://localhost:8000/presupuesto/${params.id}`).then(data => data.data)
+            setPresupuesto(resultado)
+            setFactura(f => ({ ...f, numero: resultado.numero,  
+                fecha: resultado.fecha_de_ingreso, 
+                cuit_vendedor: resultado.vendedor.cuit,
+                cuit_cliente: resultado.cliente.cuit,
+                total_general: resultado.total_general
+            }))
+            //validarCuitCliente(cuit_cliente)
+            //validarCuitVendedor(cuit_vendedor)
+
+        } catch (e) {
+            console.error(e.message);
+            alert('Ha ocurrido un error al obtener los datos del Presupuesto');
+        }
+    }
+    const obtenerItems = async () => {
+        try {
+            let resultado = await axios.get(`http://localhost:8000/itemPresupuestos/${params.id}`).then(data => data.data)
+            resultado.map((r) => {
+                const item={
+                    numero_factura_venta: factura.numero,
+                    codigo_producto: r.producto.codigo,
+                    descripcion: r.producto.nombre,
+                    precio: r.producto.precio,
+                    iva: r.producto.alicuotaIVA,
+                    cantidad: r.cantidad,
+                    subtotalTemp: r.subtotal
+                }
+                setItemsTemp([...itemsTemp, item]);              
+            })         
+            calcular(resultado)
+        } catch (e) {
+            console.error(e.message);
+            alert('Ha ocurrido un error al obtener los items de la presupuesto' + e.message);
+        }
+
+    }
 
     useEffect(() => {
         obtenerProductos();
@@ -154,22 +215,22 @@ function FacturaVentaFormulario() {
 
     const obtenerVendedor = async () => {
         console.log(factura.cuit_vendedor)
-    	try {
-    		let resultado = await axios.get(`http://localhost:8000/vendedor/${factura.cuit_vendedor}`).then(data => data.data)
-    		setVendedor(resultado)
-    	} catch (e) {
-    		console.error(e.message);
-    		alert('Ha ocurrido un error al obtener los datos del Vendedor ' + e.message);
-    	}
+        try {
+            let resultado = await axios.get(`http://localhost:8000/vendedor/${factura.cuit_vendedor}`).then(data => data.data)
+            setVendedor(resultado)
+        } catch (e) {
+            console.error(e.message);
+            alert('Ha ocurrido un error al obtener los datos del Vendedor ' + e.message);
+        }
     }
     const obtenerCliente = async () => {
-    	try {
-    		let resultado = await axios.get(`http://localhost:8000/cliente/${factura.cuit_cliente}`).then(data => data.data)
-    		setCliente(resultado)
-    	} catch (e) {
-    		console.error(e.message);
-    		alert('Ha ocurrido un error al obtener los datos del Cliente ' + e.message);
-    	}
+        try {
+            let resultado = await axios.get(`http://localhost:8000/cliente/${factura.cuit_cliente}`).then(data => data.data)
+            setCliente(resultado)
+        } catch (e) {
+            console.error(e.message);
+            alert('Ha ocurrido un error al obtener los datos del Cliente ' + e.message);
+        }
     }
 
     const obtenerFacturas = async () => {
@@ -187,7 +248,7 @@ function FacturaVentaFormulario() {
         try {
             let resultado = await axios.get('http://localhost:8000/productos').then(data => data.data)
             setProductos(resultado)
-            console.log(resultado);
+            setProductoSeleccionado(resultado[0])
         } catch (e) {
             console.error(e.message);
             alert('Ha ocurrido un error al obtener los Productos' + e.message);
@@ -196,7 +257,8 @@ function FacturaVentaFormulario() {
 
     const agregarItemTemporal = () => {
         try {
-            if (factura.numero > 0) {
+            console.log(productoSeleccionado)
+            if (document.getElementById('cantidad').value) {
                 const itemTemporal = {
                     numero_factura_venta: factura.numero,
                     codigo_producto: productoSeleccionado.codigo,
@@ -208,8 +270,9 @@ function FacturaVentaFormulario() {
                 };
                 setItemsTemp([...itemsTemp, itemTemporal]);
             } else {
-                alert('Debe ingresar un numero de factura')
+                alert('Debe seleccionar la cantidad')
             }
+
         } catch (e) {
             console.error(e.message);
             alert('Ha ocurrido un error al agregar el item: ' + e.message);
@@ -217,17 +280,9 @@ function FacturaVentaFormulario() {
 
     };
 
-    useEffect(() => {
-		if (deletedIdx !== null) {
-		  setItemsTemp(itemsTemp.filter((_, i) => i !== deletedIdx));
-		  setDeletedIdx(null);
-		}
-	  }, [deletedIdx]);
-
-	const borrarItemTemp = (idx) => {
-		setDeletedIdx(idx);
-		setItemsTemp(itemsTemp.filter((_, i) => i !== idx));
-	  };
+    const borrarItemTemp = (idx) => {
+        setItemsTemp(itemsTemp.filter((_, i) => i !== idx));
+    };
 
     const agregarItem = async (itemFinal) => {
         try {
@@ -332,7 +387,7 @@ function FacturaVentaFormulario() {
                 <div className="col-6 border border-secondary">
                     <div className="form-group row mt-4 h5">
                         <label className="col-sm-12 col-form-label">
-                            Datos del Vendedor: 
+                            Datos del Vendedor:
                         </label>
                         <div className="col-sm-12">
                             <p className="form-control-static"></p>
@@ -379,9 +434,9 @@ function FacturaVentaFormulario() {
                     </div>
                 </div>
                 <div className="col-6 border border-secondary">
-                <div className="form-group row mt-4 h5">
+                    <div className="form-group row mt-4 h5">
                         <label className="col-sm-12 col-form-label">
-                            Datos del Cliente: 
+                            Datos del Cliente:
                         </label>
                         <div className="col-sm-12">
                             <p className="form-control-static"></p>
@@ -464,9 +519,8 @@ function FacturaVentaFormulario() {
                 <label className="col-sm-1 col-form-label" htmlFor='producto'>Producto:</label>
                 <div className="col-sm-3">
                     <select className='form-control form-select' id="opcion_Producto" name="opcion_Producto" onChange={handleEditsProdSel}>
-                        <option value="" selected></option>
-                        {productos.map((producto) => (
-                            <option key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
+                        {productos.map((producto, index) => (
+                            <option selected={index=0 ? true : false} key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
                         ))}
                     </select>
                 </div>

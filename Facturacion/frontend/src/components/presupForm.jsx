@@ -31,7 +31,6 @@ function PresupuestoFormulario() {
     const [iva21, setIva21] = useState(0)
     const [iva105, setIva105] = useState(0)
     const [ivaAcumulado, setIva] = useState(0)
-    const [deletedIdx, setDeletedIdx] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -192,7 +191,7 @@ function PresupuestoFormulario() {
         try {
             let resultado = await axios.get('http://localhost:8000/productos').then(data => data.data)
             setProductos(resultado)
-            console.log(resultado);
+            setProductoSeleccionado(resultado[0])
         } catch (e) {
             console.error(e.message);
             alert('Ha ocurrido un error al obtener los Productos' + e.message);
@@ -201,7 +200,7 @@ function PresupuestoFormulario() {
 
     const agregarItemTemporal = () => {
         try {
-            if(productoSeleccionado.codigo>0){
+            if(document.getElementById('cantidad').value){
                 if (presupuesto.numero > 0) {
                     const itemTemporal = {
                         numero_presupuesto_venta: presupuesto.numero,
@@ -217,7 +216,7 @@ function PresupuestoFormulario() {
                     alert('Debe ingresar un numero de presupuesto')
                 }
             }else{
-                alert('Primero debe seleccionar un producto')
+                alert('Primero debe ingresar la cantidad')
             }
 
         } catch (e) {
@@ -227,15 +226,8 @@ function PresupuestoFormulario() {
 
     };
 
-    useEffect(() => {
-		if (deletedIdx !== null) {
-		  setItemsTemp(itemsTemp.filter((_, i) => i !== deletedIdx));
-		  setDeletedIdx(null);
-		}
-	  }, [deletedIdx]);
 
 	const borrarItemTemp = (idx) => {
-		setDeletedIdx(idx);
 		setItemsTemp(itemsTemp.filter((_, i) => i !== idx));
 	  };
 
@@ -251,17 +243,18 @@ function PresupuestoFormulario() {
 
     };
 
-    const adaptarItems = (it) => {
+    const adaptarItems = async (it) => {
         try {
-            it.forEach((item) => {
+            it.forEach((item, i) => {
                 const itemFinal = {
                     numero_presupuesto: item.numero_presupuesto_venta,
                     codigo_producto: item.codigo_producto,
                     cantidad: item.cantidad,
                     subtotal: item.subtotalTemp
                 };
-                console.log(itemFinal)
-                agregarItem(itemFinal)
+                setTimeout(() => {
+                    agregarItem(itemFinal)
+                }, 200*i);
             });
         }
         catch (e) {
@@ -280,8 +273,8 @@ function PresupuestoFormulario() {
             console.error(e.message);
             alert('Ha ocurrido un error al setear el total general: ' + e.message);
         }
-
     };
+
     const agregarPresupuesto = async () => {
         try {
             await axios.post(`http://localhost:8000/presupuesto`, presupuesto);
@@ -297,7 +290,7 @@ function PresupuestoFormulario() {
                 agregarTotal();
                 console.log(presupuesto)
                 agregarPresupuesto().then(adaptarItems(itemsTemp));
-                adaptarItems(itemsTemp)
+                //adaptarItems(itemsTemp)
                 navigate(-1)
             } else {
                 alert("el presupuesto debe contener al menos un producto")
@@ -487,8 +480,8 @@ function PresupuestoFormulario() {
                 <div className="col-sm-3">
                     <select className='form-control form-select' id="opcion_Producto" name="opcion_Producto" onChange={handleEditsProdSel}>
                         <option value="" selected></option>
-                        {productos.map((producto) => (
-                            <option key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
+                        {productos.map((producto, index) => (
+                            <option selected={index=0 ? true : false} key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
                         ))}
                     </select>
                 </div>
@@ -547,7 +540,7 @@ function PresupuestoFormulario() {
 
             <div className="mb-3 text-end">
                 <Button className="btn btn-primary ms-2" onClick={() => navigate(-1)}>Cancelar</Button>{" "}
-                <Button className="btn btn-success ms-2" onClick={GenerarPresupuesto}>Generar Presupuesto</Button>
+                <Button className="btn btn-success ms-2" onClick={() => GenerarPresupuesto()}>Generar Presupuesto</Button>
             </div>
         </div>
     );

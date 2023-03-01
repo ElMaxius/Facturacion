@@ -19,6 +19,7 @@ export default function ListaProveedores() {
 
     const agregarproveedor = () => {
         navegar("../proveedorForm/"+-1)
+        getDatos();
     }
 
     const borrar = async (cuit) =>{

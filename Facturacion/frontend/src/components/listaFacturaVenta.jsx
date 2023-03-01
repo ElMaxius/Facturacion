@@ -40,7 +40,7 @@ const FacturaVentaList = () => {
 
 
   const agregarFactura = () => {
-    navegar("../facVentaForm")
+    navegar("../facVentaForm/"+-1)
     getDatos()
   }
 

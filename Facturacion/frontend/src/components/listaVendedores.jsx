@@ -19,6 +19,7 @@ export default function ListaVendedores() {
 
     const agregarvendedor = () => {
         navegar("../vendedorForm/"+-1)
+        getDatos()
     }
 
     const borrar = async (cuit) =>{

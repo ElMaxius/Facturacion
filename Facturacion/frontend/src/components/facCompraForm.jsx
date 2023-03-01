@@ -16,6 +16,12 @@ function FacturaCompraForm() {
 		total_general: 0.0
 	});
 
+	useEffect(() => {
+		setProductoSeleccionado({
+
+		})
+	}, []);
+
 	const [proveedor, setProveedor] = useState({
 		cuit: 0,
 		nombre: "",
@@ -31,7 +37,6 @@ function FacturaCompraForm() {
 	const [iva21, setIva21] = useState(0)
 	const [iva105, setIva105] = useState(0)
 	const [ivaAcumulado, setIva] = useState(0)
-	const [deletedIdx, setDeletedIdx] = useState(null);
 	const params = useParams();
 	const navigate = useNavigate();
 
@@ -83,9 +88,7 @@ function FacturaCompraForm() {
 
 	const handleEditsProdSel = (ev) => {
 		const codigo = ev.target.value;
-		console.log(codigo);
 		const prodSel = productos.find(x => x.codigo == codigo)
-		console.log(prodSel);
 		setProductoSeleccionado(prodSel);
 	};
 
@@ -148,6 +151,7 @@ function FacturaCompraForm() {
 		try {
 			let resultado = await axios.get('http://localhost:8000/productos').then(data => data.data)
 			setProductos(resultado)
+			setProductoSeleccionado(resultado[0])
 			console.log(resultado);
 		} catch (e) {
 			console.error(e.message);
@@ -167,7 +171,7 @@ function FacturaCompraForm() {
 	}
 	const agregarItemTemporal = () => {
 		try {
-			if (factura.numero > 0) {
+			if ((factura.numero > 0)) {
 				const itemTemporal = {
 					numero_factura_compra: factura.numero,
 					codigo_producto: productoSeleccionado.codigo,
@@ -179,7 +183,7 @@ function FacturaCompraForm() {
 				};
 				setItemsTemp([...itemsTemp, itemTemporal]);
 			} else {
-				alert('Debe ingresar un numero de factura')
+				alert('Debe ingresar la cantidad')
 			}
 		} catch (e) {
 			console.error(e.message);
@@ -256,15 +260,8 @@ function FacturaCompraForm() {
 		}
 	}
 
-	useEffect(() => {
-		if (deletedIdx !== null) {
-		  setItemsTemp(itemsTemp.filter((_, i) => i !== deletedIdx));
-		  setDeletedIdx(null);
-		}
-	  }, [deletedIdx]);
 
 	const borrarItemTemp = (idx) => {
-		setDeletedIdx(idx);
 		setItemsTemp(itemsTemp.filter((_, i) => i !== idx));
 	  };
 
@@ -375,9 +372,8 @@ function FacturaCompraForm() {
 				<label className="col-sm-1 col-form-label" htmlFor='producto'>Producto:</label>
 				<div className="col-sm-3">
 					<select className='form-control form-select' id="opcion_Producto" name="opcion_Producto" onChange={handleEditsProdSel}>
-						<option value="" selected></option>
-						{productos.map((producto) => (
-							<option key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
+						{productos.map((producto, index) => (
+							<option selected={index=0 ? true : false} key={producto.codigo} value={producto.codigo} id='codigo'>{"Cod: " + producto.codigo + " - " + producto.nombre}</option>
 						))}
 					</select>
 				</div>

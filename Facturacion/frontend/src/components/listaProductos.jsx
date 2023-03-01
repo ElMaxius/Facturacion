@@ -18,6 +18,7 @@ export default function ListaProductos() {
 
     const agregarproducto = () => {
         navegar("../productoForm/" + -1)
+        getDatos();
     }
 
     const borrar = async (codigo) => {

@@ -19,6 +19,7 @@ export default function ListaClientes() {
 
     const agregarcliente = () => {
         navegar("../clienteForm/"+-1)
+        getDatos()
     }
 
     const borrar = async (cuit) =>{

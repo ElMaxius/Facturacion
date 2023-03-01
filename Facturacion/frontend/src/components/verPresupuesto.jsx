@@ -35,8 +35,15 @@ function VerPresupuesto() {
 
     useEffect(() => {
         obtenerDatosPresupuesto();
-        obtenerItems();
     }, []);
+
+    useEffect(() => {
+        obtenerItems();
+    }, [presupuesto.numero]);
+
+    useEffect(() => {
+        calcular(items);
+    }, [items.length]);
 
 
     const calcular = (i) => {
@@ -80,7 +87,7 @@ function VerPresupuesto() {
         try {
             let resultado = await axios.get(`http://localhost:8000/itemPresupuestos/${params.id}`).then(data => data.data)
             setItems(resultado)
-            calcular(resultado)
+            //calcular(resultado)
         } catch (e) {
             console.error(e.message);
             alert('Ha ocurrido un error al obtener los items de la presupuesto' + e.message);
@@ -92,7 +99,7 @@ function VerPresupuesto() {
     return (
         <div className="container">
             <h2 className="mt-4 mb-4 text-center">
-                <label htmlFor="tipo_comprobante">Tipo de presupuesto: {presupuesto.tipo_comprobante}</label>
+                <label htmlFor="tipo_comprobante">Presupuesto: {presupuesto.tipo_comprobante}</label>
             </h2>
             <div className="form-group row">
                 <label className="col-sm-3 col-form-label ms-auto" htmlFor='numero'>presupuesto Nro{" "}{presupuesto.numero}</label>
