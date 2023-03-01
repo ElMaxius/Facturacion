@@ -292,27 +292,27 @@ function FacturaVentaFormulario() {
             console.log(result);
         }
         catch (e) {
+            console.log(itemFinal)
             console.error(e.message);
             alert('Ha ocurrido un error al agregar el item: ' + e.message);
         }
 
     };
 
-    const adaptarItems = (it) => {
+    const adaptarItems = async (it) => {
         try {
-            it.forEach((item) => {
+            for (let i = 0; i < it.length; i++) {
+                const item = it[i];
                 const itemFinal = {
-                    numero_facturaVenta: item.numero_factura_venta,
+                    numero_facturaVenta: factura.numero,
                     codigo_producto: item.codigo_producto,
                     cantidad: item.cantidad,
-                    subtotal: item.subtotalTemp
+                    subtotal: item.subtotalTemp,
                 };
-                console.log(itemFinal)
-                agregarItem(itemFinal)
-            });
-        }
-        catch (e) {
-            alert('Ha ocurrido un error al adaptar los items: ' + e.message);
+                await agregarItem(itemFinal);
+            }
+        } catch (e) {
+            alert("Ha ocurrido un error al adaptar los items: " + e.message);
         }
     };
 
@@ -339,20 +339,24 @@ function FacturaVentaFormulario() {
     };
 
     const GenerarFactura = async () => {
-        if ((factura.tipo_comprobante != "") && (factura.numero != 0) && (factura.fecha != "")) {
+        if (
+            factura.tipo_comprobante != "" &&
+            factura.numero != 0 &&
+            factura.fecha != ""
+        ) {
             if (itemsTemp.length > 0) {
                 agregarTotal();
-                console.log(factura)
-                agregarFactura();
-                adaptarItems(itemsTemp)
-                navigate(-1)
+                await agregarFactura();
+
+                await adaptarItems(itemsTemp);
+
+                navigate(-1);
             } else {
-                alert("La factura debe contener al menos un producto")
+                alert("La factura debe contener al menos un producto");
             }
         } else {
             alert("Debe completar todos los datos descriptivos de la factura")
         }
-
     }
 
     return (
