@@ -12,8 +12,8 @@ class FacturaVentasBd(BaseBd):
     fecha= Column(DateTime, nullable=False)
     tipo_comprobante= Column(String, nullable=False)
     numero_presupuesto= Column(Integer, ForeignKey("presupuestos.numero"),nullable=True)
-    cuit_vendedor= Column(Integer, ForeignKey("vendedores.cuit"), nullable=False)
-    cuit_cliente= Column(Integer, ForeignKey("clientes.cuit"), nullable=False)
+    cuit_vendedor= Column(BIGINT, ForeignKey("vendedores.cuit"), nullable=False)
+    cuit_cliente= Column(BIGINT, ForeignKey("clientes.cuit"), nullable=False)
     total_general=Column(Float, nullable=False)
 
     vendedor=relationship("VendedorBd")

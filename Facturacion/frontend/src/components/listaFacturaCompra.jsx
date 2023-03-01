@@ -9,7 +9,7 @@ const FacturaCompraList = () => {
 
   useEffect(() => {
     getDatos()
-  }, []);
+  }, [facturas.length]);
 
   const getDatos = async () => {
     let resultado = await axios.get('http://localhost:8000/facturaCompras')

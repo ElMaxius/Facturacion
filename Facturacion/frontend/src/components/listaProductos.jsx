@@ -9,7 +9,7 @@ export default function ListaProductos() {
 
     useEffect(() => {
         getDatos()
-    }, []);
+    }, [productos.length]);
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/productos')
@@ -18,7 +18,6 @@ export default function ListaProductos() {
 
     const agregarproducto = () => {
         navegar("../productoForm/" + -1)
-        getDatos();
     }
 
     const borrar = async (codigo) => {

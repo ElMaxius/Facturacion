@@ -9,7 +9,7 @@ export default function ListaVendedores() {
 
     useEffect(() => {
         getDatos()
-    }, []);
+    }, [vendedores.length]);
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/vendedor')

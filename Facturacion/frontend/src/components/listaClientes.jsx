@@ -9,7 +9,7 @@ export default function ListaClientes() {
 
     useEffect(() => {
         getDatos()
-    }, []);
+    }, [clientes.length]);
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/cliente')
@@ -19,7 +19,6 @@ export default function ListaClientes() {
 
     const agregarcliente = () => {
         navegar("../clienteForm/"+-1)
-        getDatos()
     }
 
     const borrar = async (cuit) =>{

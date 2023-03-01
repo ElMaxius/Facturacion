@@ -12,14 +12,14 @@ export default function ProductoFormulario() {
 
     useEffect(() => {
         if (params.id == -1) {
-            setCodigo(-1);
+            //setCodigo();
             setNombre('');
-            setIva('');
+            setIva(0.21);
             setPrecio('');
         } else {
             getProducto(params.id);
         }
-    }, [params.id]);
+    }, []);
 
     const getProducto = async (id) => {
         try {
@@ -40,7 +40,7 @@ export default function ProductoFormulario() {
         try {
             if (params.id !== "-1") {
                 console.log({ nombre, alicuotaIVA, precio, codigo })
-                await axios.put(`http://localhost:8000/productos/${params.id}`, { nombre, alicuotaIVA, precio, codigo }).then(navigate('../listaProductos'));
+                await axios.put(`http://localhost:8000/productos/${params.id}`, { nombre, alicuotaIVA, precio, codigo}).then(navigate('../listaProductos'));
             } else {
                 await axios.post(`http://localhost:8000/productos`, { nombre, alicuotaIVA, precio }).then(navigate('../listaProductos'));
             }
@@ -74,7 +74,7 @@ export default function ProductoFormulario() {
                         className="form-select"
                         aria-label="Tipo de factura"
                         onChange={(e) => setIva(e.target.value)}
-                        //</div>defaultValue={Number(alicuotaIVA).toString()} 
+                        selected={"0.21"}
                         >
                         <option value="0.21">21%</option>
                         <option value="0.105">10.5%</option>

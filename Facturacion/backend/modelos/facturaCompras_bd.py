@@ -10,7 +10,7 @@ class FacturaComprasBd(BaseBd):
     numero = Column(Integer, primary_key=True) ##Lo cargo manual
     fecha= Column(DateTime, nullable=False)
     tipo_comprobante= Column(String, nullable=False)
-    cuit_proveedor= Column(Integer, ForeignKey("proveedores.cuit"))
+    cuit_proveedor= Column(BIGINT, ForeignKey("proveedores.cuit"))
    
     total_general=Column(Float, nullable=False)
 

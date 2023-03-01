@@ -71,7 +71,7 @@ export default function ProveedorFormulario() {
         <div className="container-fluid" style={{ width: "50vw" }}>
             <form>
                 <h2 className="mt-3 text-center">Datos del Proveedor</h2>
-                <div className="mb-3 col-2">
+                <div className="mb-3 col-3">
                     <label htmlFor="cuit" className="form-label">CUIT</label>
                     <input type="number" className="form-control" id="cuit" value={cuit} onChange={(e) => setCuit(e.target.value)} />
                 </div>
@@ -83,11 +83,11 @@ export default function ProveedorFormulario() {
                     <label htmlFor="direccion" className="form-label">Direccion</label>
                     <input type="text" className="form-control" id="direccion" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
                 </div>
-                <div className="mb-3 col-2">
+                <div className="mb-3 col-3">
                     <label htmlFor="telefono" className="form-label">Telefono</label>
-                    <input type="number" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
+                    <input type="text" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
                 </div>
-                <div className="mb-3 col-2">
+                <div className="mb-3 col-4">
                     <label htmlFor="localidad" className="form-label">localidad</label>
                     <input type="text" className="form-control" id="localidad" value={localidad} onChange={(e) => setLocalidad(e.target.value)} />
                 </div>

@@ -12,7 +12,7 @@ function FacturaVentaFormulario() {
         numero: 0,
         fecha: "",
         tipo_comprobante: "",
-        numero_presupuesto: 0,
+        numero_presupuesto: null,
         cuit_vendedor: 0,
         cuit_cliente: 0,
         total_general: 0.0
@@ -84,8 +84,6 @@ function FacturaVentaFormulario() {
                 cuit_cliente: resultado.cliente.cuit,
                 total_general: resultado.total_general
             }))
-            //validarCuitCliente(cuit_cliente)
-            //validarCuitVendedor(cuit_vendedor)
 
         } catch (e) {
             console.error(e.message);
@@ -126,9 +124,14 @@ function FacturaVentaFormulario() {
     }, []);
 
     const buscarUltimo = (result) => {
-        const numeroMaximo = result.reduce((a, b) => a.numero > b.numero ? a : b).numero;
-        console.log(numeroMaximo)
-        setFactura(f => ({ ...f, numero: numeroMaximo + 1 }))
+        if(result){
+            const numeroMaximo = result.reduce((a, b) => a.numero > b.numero ? a : b).numero;
+            console.log(numeroMaximo)
+            setFactura(f => ({ ...f, numero: numeroMaximo + 1 }))
+        }else{
+            setFactura(f => ({ ...f, numero: 1 }))
+        }
+
     }
 
     useEffect(() => {
@@ -331,6 +334,7 @@ function FacturaVentaFormulario() {
     };
     const agregarFactura = async () => {
         try {
+            console.log(factura)
             await axios.post(`http://localhost:8000/facturaVentas`, factura);
         }
         catch (e) {

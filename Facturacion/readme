@@ -19,9 +19,9 @@ Ejemplo:
 Factura A 
 ----------------------------------------------------------------
 
-Cantidad	Codigo	Descripcion	PU	IVA	Subtotal
-2	PA	Producto A	10.00	21.00	20.00
-1	PB	Producto B	5.00	10.50	5.00
+Cantidad	Codigo	Descripcion	  PU	  IVA	  Subtotal
+2	         PA	    Producto A	  10.00	  21.00	  20.00
+1	         PB	    Producto B	  5.00	  10.50	  5.00
 					
 				Subtotal	25.00
 

@@ -71,7 +71,7 @@ export default function ClienteFormulario() {
         <div className="container-fluid" style={{ width: "50vw" }}>
             <form>
                 <h2 className="mt-3 text-center">Datos del Cliente</h2>
-                <div className="mb-3 col-2">
+                <div className="mb-3 col-3">
                     <label htmlFor="cuit" className="form-label">CUIT</label>
                     <input type="number" className="form-control" id="cuit" value={cuit} onChange={(e) => setCuit(e.target.value)} />
                 </div>
@@ -85,7 +85,7 @@ export default function ClienteFormulario() {
                 </div>
                 <div className="mb-3 col-2">
                     <label htmlFor="telefono" className="form-label">Telefono</label>
-                    <input type="number" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
+                    <input type="text" className="form-control" id="telefono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
                 </div>
                 <div className="mb-3 col-2">
                     <label htmlFor="localidad" className="form-label">localidad</label>

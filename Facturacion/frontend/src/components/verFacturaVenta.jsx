@@ -225,7 +225,7 @@ function VerFacturaVenta() {
                                 <td>{item.codigo_producto}</td>
                                 <td>{item.producto.nombre}</td>
                                 <td>{(item.producto.precio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
-                                <td>{item.producto.alicuotaIva}</td>
+                                <td>{item.producto.alicuotaIVA}</td>
                                 <td>{(item.subtotal).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                             </tr>
                         );

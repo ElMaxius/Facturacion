@@ -9,7 +9,7 @@ export default function ListaProveedores() {
 
     useEffect(() => {
         getDatos()
-    }, []);
+    }, [proveedores.length]);
 
     const getDatos = async () => {
         let resultado = await axios.get('http://localhost:8000/proveedor')
